@@ -649,6 +649,26 @@ form.entry{display:flex;flex-direction:column;gap:32px}
 .done .btn.ghost:hover{background:#fff;border-color:#fff}
 
 /* ---------- page nav ---------- */
+.entry-lead{border:1px solid var(--line);border-radius:4px;background:#fff;padding:38px 30px}
+@media(min-width:720px){.entry-lead{padding:52px 46px}}
+.entry-lead .lead-h{font-family:var(--jp);font-weight:500;font-size:20px;line-height:1.7;margin:14px 0 0;color:var(--ink)}
+@media(min-width:720px){.entry-lead .lead-h{font-size:24px}}
+.entry-lead .lead-p{font-size:13.5px;line-height:2.1;color:var(--ink-soft);margin:18px 0 0}
+.entry-lead .btn-row{margin-top:30px}
+.entry-lead .lead-n{font-size:11.5px;line-height:2;color:var(--ink-faint);margin:24px 0 0}
+.entry-lead .lead-n a{color:var(--rose-deep);text-decoration:underline;text-underline-offset:3px}
+.legal{max-width:760px}
+.legal .legal-org{border:1px solid var(--line);border-radius:4px;padding:22px 24px;margin:0 0 40px;font-size:15px;color:var(--ink);line-height:1.8}
+.legal .legal-org .label{display:block;margin-bottom:8px}
+.legal .legal-org .sub{display:block;font-size:12px;color:var(--ink-faint);margin-top:6px}
+.legal section{margin-top:38px}
+.legal h2{font-family:var(--jp);font-weight:500;font-size:15px;letter-spacing:.02em;color:var(--ink);margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.legal p{font-size:13.5px;line-height:2.15;color:var(--ink-soft);margin:0 0 10px}
+.legal p.n{font-size:12px;color:var(--ink-faint)}
+.legal ul{margin:6px 0 14px;padding-left:1.1em}
+.legal li{font-size:13.5px;line-height:2.05;color:var(--ink-soft)}
+.legal strong{color:var(--ink);font-weight:500}
+.legal .legal-date{margin-top:46px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-faint)}
 .pagenav{border-top:1px solid var(--line)}
 .pagenav .grid{display:grid;grid-template-columns:1fr;max-width:var(--max);margin:0 auto}
 @media(min-width:640px){.pagenav .grid{grid-template-columns:1fr 1fr}}
@@ -887,6 +907,9 @@ const EVENT = {
   guests:"約100名", access:"INVITATION ONLY"
 };
 const LINKS = {
+  /* Google フォームの URL が決まったら、ここに貼るだけで
+     ENTRY ページのボタンとフッターのリンクが有効になります。 */
+  entryForm:"",
   instagram:"https://www.instagram.com/buzzbase.05.22/",
   handle:"@buzzbase.05.22"
 };
@@ -1468,50 +1491,27 @@ ${pageHero("07","Entry","参加申込",[
 <div class="wrap pad">
   <div class="entry-grid">
     <div id="entrySlot">
-      <form class="entry" id="entryForm" novalidate>
-        <p class="label">All fields required — 全項目必須</p>
-        ${[
-          {id:"name",l:"Name",ja:"氏名",ph:"新見 康樹",type:"text",ac:"name"},
-          {id:"company",l:"Company / Activity",ja:"会社名または活動名",ph:"株式会社BUZZBASE / クリエイター名",type:"text",ac:"organization"},
-          {id:"email",l:"Email",ja:"メールアドレス",ph:"you@example.com",type:"email",ac:"email"},
-          {id:"sns",l:"Instagram / SNS",ja:"InstagramまたはSNSのURL",ph:"@your_account または https://instagram.com/your_account",type:"text",ac:"off"}
-        ].map(f=>`<div class="field">
-          <label class="lab" for="${f.id}"><span class="en">${f.l}</span><span class="ja">${f.ja}</span></label>
-          <input id="${f.id}" name="${f.id}" type="${f.type}" autocomplete="${f.ac}" placeholder="${esc(f.ph)}">
-          <p class="err" id="err-${f.id}" hidden></p></div>`).join("")}
-
-        <div class="field">
-          <label class="lab" for="category"><span class="en">Category</span><span class="ja">参加区分</span></label>
-          <select id="category" name="category">
-            <option value="">選択してください</option>
-            ${CATEGORIES.map(c=>`<option value="${c.v}">${esc(c.l)}</option>`).join("")}
-          </select>
-          <p class="err" id="err-category" hidden></p>
-        </div>
-
-        <div class="field">
-          <label class="lab" for="reason"><span class="en">Reason</span><span class="ja">応募理由</span></label>
-          <p class="hint">どんな出会いを求めているか、当日どんな話をしたいかをお聞かせください。（20文字以上）</p>
-          <textarea id="reason" name="reason" rows="6" placeholder="例）自社ブランドのアンバサダーを探しており、発信力のある方と直接お話ししたいと考えています。"></textarea>
-          <p class="err" id="err-reason" hidden></p>
-        </div>
-
-        <div class="hp" aria-hidden="true">
-          <label for="website">Website</label>
-          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
-        </div>
-
-        <div class="consent">
-          <label for="consent"><input id="consent" name="consent" type="checkbox">
-            <span>プライバシーポリシーに同意します。ご入力いただいた情報は、本イベントのご案内および運営の目的にのみ使用します。</span></label>
-          <p class="err" id="err-consent" hidden></p>
-        </div>
-
+      ${LINKS.entryForm ? `
+      <div class="entry-lead">
+        <p class="label">Application — 参加申込</p>
+        <h2 class="lead-h">応募フォームへお進みください</h2>
+        <p class="lead-p">お名前・会社名または活動名・ご連絡先・参加区分・応募理由をおうかがいします。所要時間は3分ほどです。ご入力内容は運営が一件ずつ拝見し、ご参加が確定した方にのみ招待コードと会場情報をお送りします。</p>
         <div class="btn-row">
-          <button class="btn primary" type="submit" id="submitBtn">申込内容を送信する ${ARROW}</button>
-          <p style="margin:0;font-size:11px;line-height:1.9;color:var(--ink-faint)">送信後、運営より原則5営業日以内にご連絡いたします。</p>
+          <a class="btn primary" href="${LINKS.entryForm}" target="_blank" rel="noopener noreferrer">申込フォームへ進む ${ARROW}</a>
+          <a class="btn ghost" href="#/privacy">個人情報の取り扱い ${ARROW}</a>
         </div>
-      </form>
+        <p class="lead-n">送信いただいた時点で、<a href="#/privacy">プライバシーポリシー</a>にご同意いただいたものとして取り扱います。運営より原則5営業日以内にご連絡いたします。</p>
+      </div>` : `
+      <div class="entry-lead">
+        <p class="label">Application — 参加申込</p>
+        <h2 class="lead-h">申込フォームを準備しています</h2>
+        <p class="lead-p">現在、参加申込フォームを準備中です。公開までしばらくお待ちください。お急ぎの場合や、ご不明な点がある場合は、Instagram の DM よりご連絡ください。運営が直接ご案内いたします。</p>
+        <div class="btn-row">
+          <a class="btn primary" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">Instagram の DM で問い合わせる ${ARROW}</a>
+          <a class="btn ghost" href="#/privacy">個人情報の取り扱い ${ARROW}</a>
+        </div>
+        <p class="lead-n">お預かりする情報の取り扱いについては<a href="#/privacy">プライバシーポリシー</a>をご確認ください。</p>
+      </div>`}
     </div>
 
     <aside class="side">
@@ -1529,6 +1529,66 @@ ${pageHero("07","Entry","参加申込",[
         <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.out}${LINKS.handle}</a>
       </div>
     </aside>
+  </div>
+</div>`;
+
+PAGES["/privacy"] = () => `
+<header class="phero" aria-label="プライバシーポリシー">
+  <span class="blob a" style="left:-6%;top:-30%;width:420px;height:420px;opacity:.45" aria-hidden="true"></span>
+  <span class="blob d" style="right:-8%;bottom:-40%;width:420px;height:420px;opacity:.4" aria-hidden="true"></span>
+  ${vlabel("Invitation Only","l","top:16%")}
+  <div class="wrap" style="position:relative;z-index:3">
+    <p class="no">Legal</p>
+    <h1>Privacy</h1>
+    <p class="kana">個人情報の取り扱いについて</p>
+    <span class="hairline" style="margin-top:22px" aria-hidden="true"></span>
+    <div class="lede"><p>BUZZBASE MEETUP（以下「本イベント」）へのご応募にあたってお預かりする個人情報の、取得・利用・管理の方針を定めたものです。</p></div>
+  </div></header>
+<div class="wrap pad">
+  <div class="legal rv">
+    <p class="legal-org"><span class="label">Operator — 運営者</span>BUZZBASE MEETUP 運営事務局<span class="sub">主催：HANKUN &amp; STREETPV</span></p>
+
+    <section><h2>1. 取得する情報</h2>
+      <p>参加申込にあたり、以下の情報をお預かりします。</p>
+      <ul>
+        <li>氏名</li><li>会社名または活動名</li><li>メールアドレス</li>
+        <li>Instagram のユーザー名、または SNS の URL</li>
+        <li>参加区分</li><li>応募理由</li>
+      </ul>
+      <p class="n">上記以外の情報を、ご本人の同意なく取得することはありません。</p></section>
+
+    <section><h2>2. 利用目的</h2>
+      <p>お預かりした情報は、次の目的にのみ使用します。</p>
+      <ul>
+        <li>参加可否の選考、および選考結果のご連絡</li>
+        <li>会場・受付情報など、当日のご案内の送付</li>
+        <li>当日の受付照合および運営</li>
+        <li>次回以降の BUZZBASE MEETUP のご案内</li>
+      </ul></section>
+
+    <section><h2>3. 保存期間</h2>
+      <p>次回以降のご案内に使用するため、上記の目的の範囲内で継続して保管します。ご案内が不要になった場合や、情報の削除をご希望の場合は、下記のお問い合わせ窓口までご連絡ください。速やかに削除いたします。</p></section>
+
+    <section><h2>4. 第三者への提供</h2>
+      <p>ご本人の同意がある場合、または法令に基づき開示が必要な場合を除き、お預かりした情報を第三者へ提供・販売・共有することはありません。</p></section>
+
+    <section><h2>5. 写真・映像の取り扱い</h2>
+      <p>当日は記録のため、会場内で写真・映像を撮影します。撮影した写真・映像を SNS・Web サイトなど外部へ公開することはありません。</p>
+      <p class="n">今後、外部公開を伴う撮影を行う場合は、事前に改めてご案内し、ご同意をいただいたうえで実施します。</p></section>
+
+    <section><h2>6. 開示・訂正・削除のご請求</h2>
+      <p>ご本人からのお申し出により、お預かりしている情報の開示・訂正・削除に対応します。ご本人であることを確認させていただいたうえで対応いたします。</p></section>
+
+    <section><h2>7. お問い合わせ窓口</h2>
+      <p>本ポリシーおよび個人情報の取り扱いに関するお問い合わせは、下記までご連絡ください。</p>
+      <p><strong>BUZZBASE MEETUP 運営事務局</strong></p>
+      <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.out}Instagram ${LINKS.handle} の DM</a></section>
+
+    <p class="legal-date">最終更新日：2026.09.05</p>
+  </div>
+  <div class="btn-row mt-lg rv">
+    <a class="btn primary" href="#/entry">参加申込へ ${ARROW}</a>
+    <a class="btn ghost" href="#/">ホームへ戻る ${ARROW}</a>
   </div>
 </div>`;
 
@@ -1576,7 +1636,8 @@ $("#footTag").innerHTML = esc(SITE.tagline) + "<br>完全招待制のプライ�
 $("#footNav").innerHTML = NAV.map(n=>`<li><a href="#${n.href}"><span class="fno">${n.file||"—"}</span><span class="fname">${n.label}</span></a></li>`).join("");
 $("#footContact").innerHTML = `
   <li><a href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer"><span style="color:var(--rose-deep)">${ICON.at}</span><span class="fname">${LINKS.handle}</span></a></li>
-  <li><a href="#/entry"><span style="color:var(--rose-deep)">${ICON.mail}</span><span class="fname">Entry Form</span></a></li>`;
+  <li><a href="#/entry"><span style="color:var(--rose-deep)">${ICON.mail}</span><span class="fname">Entry Form</span></a></li>
+  <li><a href="#/privacy"><span style="color:var(--rose-deep)">${ICON.lock}</span><span class="fname">Privacy Policy</span></a></li>`;
 $("#footMeta").innerHTML = `<div><dt>Date</dt><dd>${esc(EVENT.date)}</dd></div>
   <div><dt>Time</dt><dd>${esc(EVENT.time)}</dd></div>`;
 $("#footCopy").textContent = `© ${new Date().getFullYear()} ${SITE.name}. All rights reserved.`;
@@ -1626,6 +1687,7 @@ function render(){
   });
   document.title = path === "/" ? "BUZZBASE MEETUP"
     : path === "/404" ? "404 | BUZZBASE MEETUP"
+    : path === "/privacy" ? "Privacy | BUZZBASE MEETUP"
     : (NAV.find(n=>n.href===path)?.label || "") + " | BUZZBASE MEETUP";
   setupReveals(); setupCounters();
   if (path === "/entry") setupForm();
