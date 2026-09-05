@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, noimageindex, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="description" content="BUZZBASE MEETUP VOL.03 — 完全招待制のクリエイティブ・カルチャーイベント">
-<meta name="theme-color" content="#08080A">
+<meta name="theme-color" content="#F8F7FB">
 <meta property="og:title" content="BUZZBASE MEETUP VOL.03">
 <meta property="og:description" content="BUZZ THE CULTURE. BASE THE MOMENT.">
 <meta property="og:type" content="website">
@@ -269,60 +269,47 @@ a:hover>.circ,.circ:hover{background:var(--grad);color:var(--on-grad);border-col
   font-weight:300;font-size:clamp(1rem,2.4vw,1.35rem);letter-spacing:.08em;color:var(--ink-faint)}
 @media(min-width:900px){.hero .tagline{padding:0 34px 0 calc(var(--rail) + 14px)}}
 
-/* ---------- ダークヒーロー（BUZZBASE ワードマーク） ---------- */
-.hero.dark{--h-bg:#08080A;--h-red:#E60020;--h-red-b:#FF1638;--h-text:#F4F1EA;--h-sub:#8B8885;
-  background:var(--h-bg);padding-bottom:54px}
-.hero.dark .stage{background:#0D0D10;border:1px solid rgba(255,255,255,.07);display:block;min-height:520px}
-@media(min-width:900px){.hero.dark .stage{min-height:600px}}
-.hero.dark .stage picture{position:absolute;inset:0;display:block}
-.hero.dark .stage .photo{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:50% 20%;opacity:.5}
-@media(min-width:900px){.hero.dark .stage .photo{object-position:62% 24%}}
-.hero.dark .prism{background:linear-gradient(115deg,rgba(230,0,32,.24),rgba(0,0,0,0) 44%),
-  linear-gradient(285deg,rgba(255,22,56,.16),rgba(0,0,0,0) 48%)}
-.hero.dark .scrim{background:linear-gradient(to top,rgba(8,8,10,.96) 0%,rgba(8,8,10,.88) 44%,rgba(8,8,10,.62) 70%,rgba(8,8,10,.34) 100%)}
-@media(min-width:900px){.hero.dark .scrim{background:linear-gradient(to left,rgba(8,8,10,.35) 0%,rgba(8,8,10,.72) 34%,rgba(8,8,10,.93) 62%,rgba(8,8,10,.97) 100%)}}
-.hero.dark .ghosttype{-webkit-text-stroke:1px rgba(255,255,255,.12)}
-.hero.dark .floaters{opacity:.16;z-index:1}
-.hero.dark .pillbar{border:1px solid rgba(255,255,255,.12)}
-.hero.dark .vlabel{color:rgba(255,255,255,.26)}
-.hero.dark .tagline{color:rgba(244,241,234,.4)}
-.hero.dark .sub{color:var(--h-sub)}
-.hero.dark .copy{position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:auto;
-  z-index:4;padding:54px 24px 58px}
-@media(min-width:900px){.hero.dark .copy{padding:92px 40px 96px;width:min(60%,680px)}}
-.classbox{display:inline-block;margin:0 0 20px;padding:10px 16px;border:1px solid rgba(230,0,32,.45);
+/* ---------- ワードマーク・ヒーロー（白背景 / BUZZ 白フチ黒・BASE 赤） ---------- */
+.hero.wm{--red:#E60020;--red-b:#FF1638;--outline:#0A0A0C;padding-bottom:54px}
+.hero.wm .stage{background:var(--mist-2);display:block;min-height:540px}
+@media(min-width:900px){.hero.wm .stage{min-height:600px}}
+.hero.wm .stage picture{position:absolute;inset:0;display:block}
+.hero.wm .stage .photo{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:50% 18%}
+@media(min-width:900px){.hero.wm .stage .photo{object-position:64% 24%}}
+.hero.wm .scrim{background:linear-gradient(to top,rgba(248,247,251,.98) 0%,rgba(248,247,251,.94) 46%,rgba(248,247,251,.72) 72%,rgba(248,247,251,.34) 100%)}
+@media(min-width:900px){.hero.wm .scrim{background:linear-gradient(to left,rgba(248,247,251,.22) 0%,rgba(248,247,251,.7) 32%,rgba(248,247,251,.95) 60%,rgba(248,247,251,.99) 100%)}}
+.hero.wm .copy{position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:auto;
+  z-index:4;padding:52px 24px 56px}
+@media(min-width:900px){.hero.wm .copy{padding:88px 40px 92px;width:min(60%,680px)}}
+.classbox{display:inline-block;margin:0 0 20px;padding:10px 16px;border:1px solid rgba(230,0,32,.35);
   font-family:var(--display);font-weight:500;text-transform:uppercase;font-size:9.5px;letter-spacing:.24em;
-  line-height:2;color:rgba(255,60,86,.92)}
+  line-height:2;color:var(--red)}
 .hero .eyebrow-red{margin:0 0 6px;font-family:var(--display);font-weight:600;text-transform:uppercase;
-  font-size:11.5px;letter-spacing:.24em;color:var(--h-red-b)}
-.hero .presents{margin:0 0 14px;font-family:var(--display);font-weight:500;text-transform:uppercase;
-  font-size:10.5px;letter-spacing:.24em;color:rgba(244,241,234,.42)}
-.wordmark{margin:0;font-family:var(--display);font-weight:700;text-transform:uppercase;line-height:.9;
-  letter-spacing:-.004em;font-size:clamp(2.7rem,10.5vw,5.4rem)}
-.wordmark span.ln{display:block}
-.wordmark .w{color:#fff}
-.wordmark .r{color:var(--h-red)}
+  font-size:11.5px;letter-spacing:.24em;color:var(--red)}
+.hero .presents{margin:0 0 16px;font-family:var(--display);font-weight:500;text-transform:uppercase;
+  font-size:10.5px;letter-spacing:.24em;color:var(--ink-faint)}
+.wordmark{margin:0;font-family:var(--display);font-weight:700;text-transform:uppercase;line-height:.92;
+  letter-spacing:-.004em;font-size:clamp(2.6rem,10vw,5.2rem)}
+.wordmark .ln{display:block}
+.wordmark .buzz{color:#fff;-webkit-text-stroke:.052em var(--outline);paint-order:stroke fill;
+  text-shadow:0 2px 0 rgba(10,10,12,.14)}
+.wordmark .base{color:var(--red)}
+.wordmark .meet{color:var(--ink)}
 .hero .en-tag{margin:22px 0 0;font-family:var(--display);font-weight:500;text-transform:uppercase;
-  font-size:clamp(.76rem,2vw,.95rem);letter-spacing:.09em;color:#fff}
+  font-size:clamp(.76rem,2vw,.95rem);letter-spacing:.09em;color:var(--ink)}
 .hero .jp{margin:18px 0 0;font-family:var(--jp);font-weight:400;font-size:13px;line-height:2.15;
-  color:rgba(244,241,234,.7);max-width:34em}
+  color:var(--ink-soft);max-width:34em}
 .hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 .hero .cta a{display:inline-flex;align-items:center;gap:10px;padding:15px 30px;border-radius:999px;
   font-family:var(--jp);font-size:13px;letter-spacing:.08em;
-  transition:transform .35s var(--ease),background .35s,border-color .35s}
-.hero .cta .red{background:var(--h-red);color:#fff}
-.hero .cta .red:hover{background:var(--h-red-b);transform:translateY(-2px)}
-.hero .cta .line{border:1px solid rgba(255,255,255,.38);color:#fff}
-.hero .cta .line:hover{border-color:#fff;transform:translateY(-2px)}
+  transition:transform .35s var(--ease),background .35s,border-color .35s,color .35s}
+.hero .cta .red{background:var(--red);color:#fff}
+.hero .cta .red:hover{background:var(--red-b);transform:translateY(-2px)}
+.hero .cta .line{border:1px solid var(--line-2);color:var(--ink)}
+.hero .cta .line:hover{border-color:var(--red);color:var(--red);transform:translateY(-2px)}
 .hero .charslot{position:absolute;right:1%;bottom:0;width:min(44%,440px);pointer-events:none;z-index:3}
-.hero .charslot img{display:block;width:100%;height:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
-@media(max-width:899px){.hero .charslot{right:-6%;bottom:auto;top:0;width:72%;opacity:.42;z-index:1}}
-/* ヘッダーが黒背景の上にあるとき */
-header.site.on-dark .logo b{color:#fff}
-header.site.on-dark .logo i{color:rgba(255,255,255,.48)}
-header.site.on-dark nav.main a{color:rgba(255,255,255,.68)}
-header.site.on-dark nav.main a:hover,header.site.on-dark nav.main a[aria-current="page"]{color:#fff}
-header.site.on-dark .burger{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.24);color:#fff}
+.hero .charslot img{display:block;width:100%;height:auto;filter:drop-shadow(0 26px 50px rgba(51,51,62,.28))}
+@media(max-width:899px){.hero .charslot{right:-6%;bottom:auto;top:0;width:70%;opacity:.5;z-index:1}}
 
 /* ---------- news band ---------- */
 .newsband{position:relative;max-width:1320px;margin:0 auto;padding:0 20px}
@@ -1178,7 +1165,7 @@ function pageHero(no,en,kana,lede){
 const PAGES = {};
 
 PAGES["/"] = () => `
-<section class="hero dark" aria-labelledby="heroTitle">
+<section class="hero wm" aria-labelledby="heroTitle">
   <div class="stagewrap">
     <span class="blob a" style="left:-8%;top:0;width:420px;height:420px" aria-hidden="true"></span>
     <span class="blob d" style="right:-6%;bottom:-10%;width:380px;height:380px" aria-hidden="true"></span>
@@ -1207,8 +1194,8 @@ PAGES["/"] = () => `
         <p class="eyebrow-red">${esc(SITE.catch)}</p>
         <p class="presents">${esc(SITE.presenter)} ／ ${esc(SITE.volume)}</p>
         <h1 id="heroTitle" class="wordmark" aria-label="BUZZBASE MEETUP">
-          <span class="ln w" aria-hidden="true">${splitChars("BUZZBASE")}</span>
-          <span class="ln r" aria-hidden="true">${splitChars("MEETUP", 8)}</span>
+          <span class="ln" aria-hidden="true"><span class="buzz">${splitChars("BUZZ")}</span><span class="base">${splitChars("BASE", 4)}</span></span>
+          <span class="ln meet" aria-hidden="true">${splitChars("MEETUP", 8)}</span>
         </h1>
         <p class="en-tag">${esc(SITE.tagline)}</p>
         <p class="jp">肩書きを超え、価値観でつながる一夜。<br>発信力を持つインフルエンサーと、事業を動かす経営者・役員が集う、完全招待制のプライベートミートアップ。</p>
@@ -1710,9 +1697,7 @@ $("#introFoot").textContent = SITE.presenter;
 
 const header = $("#siteHeader"), pagetop = $("#pagetop");
 const onScroll = () => {
-  const scrolled = window.scrollY > 12;
-  header.classList.toggle("scrolled", scrolled);
-  header.classList.toggle("on-dark", !scrolled && currentPath() === "/");
+  header.classList.toggle("scrolled", window.scrollY > 12);
   pagetop.classList.toggle("show", window.scrollY > 600);
 };
 window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
