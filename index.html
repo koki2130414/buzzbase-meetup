@@ -887,7 +887,6 @@ const EVENT = {
   guests:"約100名", access:"INVITATION ONLY"
 };
 const LINKS = {
-  entryForm:"https://forms.gle/REPLACE_WITH_YOUR_FORM",
   instagram:"https://www.instagram.com/buzzbase.05.22/",
   handle:"@buzzbase.05.22"
 };
@@ -953,10 +952,6 @@ const CREW = [
    bio:"AIを使った制作を軸に、公式サイトの設計・運用と当日の記録まわりを担当。BUZZBASE の発信を裏側から支える。"},
   {code:"C-04",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Producer",ja:"企画 / 運営",ini:"SI",photo:PHOTO_INUI,
    bio:"イベント全体の企画と当日の運営を担当。進行、導線、会場のオペレーションまでを取りまとめる。"},
-  {code:"C-05",name:"RYO",role:"Matching Director",ja:"マッチングディレクター",ini:"RY",bio:"参加者の事業領域と発信テーマを事前に整理し、当日の座組みと紹介の導線を設計する。"},
-  {code:"C-06",name:"MIKA",role:"Guest Relations",ja:"ゲストリレーション",ini:"MK",bio:"招待審査から当日のご案内までを担当。ご応募いただいた方への連絡窓口。"},
-  {code:"C-07",name:"KENT",role:"Sound & Lighting",ja:"サウンド / ライティング",ini:"KT",bio:"会場の音と光を設計。時間帯ごとに空気を切り替える演出プランを組み立てる。"},
-  {code:"C-08",name:"AOI",role:"PR & Community",ja:"PR / コミュニティ",ini:"AO",bio:"開催前後の発信とコミュニティ運営を担当。参加者同士の継続的なつながりをサポートする。"}
 ];
 const PLANS = [
   {code:"T-01",name:"Influencer",ja:"インフルエンサー招待枠",price:"¥0",pn:"招待制 / 審査あり",
@@ -1299,7 +1294,7 @@ ${pageHero("01","Numbers","イベントデータ",[
       ${STATS.map(s=>`<li class="stat rv">
         <span class="sheen" aria-hidden="true"></span>
         <p class="label" style="margin:0">${esc(s.label)}</p>
-        <p class="big num" data-count="${s.value}" data-grouped="${s.grouped?1:0}" data-suffix="${esc(s.suffix||"")}">0${esc(s.suffix||"")}</p>
+        <p class="big num" data-count="${s.value}" data-grouped="${s.grouped?1:0}" data-suffix="${esc(s.suffix||"")}">${s.grouped ? s.value.toLocaleString("en-US") : s.value}${esc(s.suffix||"")}</p>
         <p class="ja">${esc(s.ja)}</p><p class="n">${esc(s.note)}</p></li>`).join("")}
     </ul>
   </div>
@@ -1396,7 +1391,6 @@ ${pageHero("04","Crew","主催・運営メンバー",[
               ${ICON.at}<span>@${esc(m.ig)}</span></a>` : ""}
         </div></article></li>`).join("")}
     </ul>
-    <p class="notice mt-lg rv">※ 半谷・新見・乾 以外の4名は仮のメンバーです。実際のお名前・役割・写真をお渡しいただければ差し替えます。</p>
     <div class="btn-row mt-md rv">
       <a class="btn primary" href="#/ticket">参加費を確認する ${ARROW}</a>
       <a class="btn ghost" href="#/entry">参加申込へ ${ARROW}</a>
@@ -1534,11 +1528,6 @@ ${pageHero("07","Entry","参加申込",[
         <p>フォームの内容についてご不明な点がある場合は、Instagram の DM からお問い合わせください。</p>
         <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.out}${LINKS.handle}</a>
       </div>
-      <div class="box">
-        <p class="label" style="margin:0">External Form</p>
-        <p>外部フォーム（Google フォーム等）からのお申込みをご希望の場合はこちら。</p>
-        <a class="out" href="${LINKS.entryForm}" target="_blank" rel="noopener noreferrer">${ICON.out}Open Entry Form</a>
-      </div>
     </aside>
   </div>
 </div>`;
@@ -1587,7 +1576,7 @@ $("#footTag").innerHTML = esc(SITE.tagline) + "<br>完全招待制のプライ�
 $("#footNav").innerHTML = NAV.map(n=>`<li><a href="#${n.href}"><span class="fno">${n.file||"—"}</span><span class="fname">${n.label}</span></a></li>`).join("");
 $("#footContact").innerHTML = `
   <li><a href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer"><span style="color:var(--rose-deep)">${ICON.at}</span><span class="fname">${LINKS.handle}</span></a></li>
-  <li><a href="${LINKS.entryForm}" target="_blank" rel="noopener noreferrer"><span style="color:var(--rose-deep)">${ICON.mail}</span><span class="fname">Entry Form</span></a></li>`;
+  <li><a href="#/entry"><span style="color:var(--rose-deep)">${ICON.mail}</span><span class="fname">Entry Form</span></a></li>`;
 $("#footMeta").innerHTML = `<div><dt>Date</dt><dd>${esc(EVENT.date)}</dd></div>
   <div><dt>Time</dt><dd>${esc(EVENT.time)}</dd></div>`;
 $("#footCopy").textContent = `© ${new Date().getFullYear()} ${SITE.name}. All rights reserved.`;
@@ -1684,6 +1673,7 @@ function setupReveals(){
 function setupCounters(){
   const els = $$("[data-count]"); if (!els.length) return;
   const run = el => {
+    if (el.dataset.ran) return; el.dataset.ran = "1";
     const target = +el.dataset.count, grouped = el.dataset.grouped === "1", suffix = el.dataset.suffix || "";
     if (reduced()) { el.textContent = (grouped?target.toLocaleString("en-US"):target) + suffix; return; }
     const dur = 1700, t0 = performance.now();
@@ -1695,7 +1685,7 @@ function setupCounters(){
     requestAnimationFrame(tick);
   };
   if (!("IntersectionObserver" in window)) { els.forEach(run); return; }
-  const co = new IntersectionObserver(en=>en.forEach(x=>{ if(x.isIntersecting){ run(x.target); co.unobserve(x.target);} }),{threshold:.4});
+  const co = new IntersectionObserver(en=>en.forEach(x=>{ if(x.isIntersecting){ run(x.target); co.unobserve(x.target);} }),{threshold:0, rootMargin:"0px 0px -8% 0px"});
   els.forEach(el=>co.observe(el));
 }
 
