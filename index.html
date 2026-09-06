@@ -756,6 +756,14 @@ form.entry{display:flex;flex-direction:column;gap:32px}
 .missions li{display:flex;align-items:flex-start;gap:18px;padding:22px 24px;background:#fff;
   border:1px solid var(--line);border-radius:4px}
 .missions .no{flex:none;font-family:var(--display);font-weight:700;font-size:18px;color:var(--red);letter-spacing:.04em}
+.partners{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.partners{grid-template-columns:1fr 1fr}}
+.partners li{background:#fff;border:1px solid var(--line);border-radius:4px;padding:30px 26px;text-align:center}
+.partners .label{margin:0;color:var(--red)}
+.partners .nm{margin:14px 0 0;font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(1.5rem,4vw,2rem);letter-spacing:.02em;color:var(--ink);line-height:1.1}
+.partners img{display:block;max-height:70px;width:auto;margin:14px auto 0}
+.partners .ja{margin:10px 0 0;font-size:12px;letter-spacing:.08em;color:var(--ink-faint)}
 .missions .t{font-family:var(--jp);font-size:15px;line-height:1.9;color:var(--ink)}
 .pagenav{border-top:1px solid var(--line)}
 .pagenav .grid{display:grid;grid-template-columns:1fr;max-width:var(--max);margin:0 auto}
@@ -1772,13 +1780,21 @@ const CREW = [
   {code:"C-02",name:"STREETPV",role:"Co-Organizer",ja:"共催 / 映像ディレクション",ini:"SP",bio:"ストリートカルチャーを軸にした映像制作チーム。当日のオフィシャル撮影とアーカイブ映像の制作を担当。"}, */
   {code:"C-02",name:"KOKI NIIMI",nameJa:"新見 康樹",role:"AI Creator",ja:"AIクリエイター",ini:"KN",photo:PHOTO_KOKI,ig:"_ko_213",
    bio:"AIを使った制作を軸に、公式サイトの設計・運用と当日の記録まわりを担当。BUZZBASE の発信を裏側から支える。"},
-  {code:"C-03",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Producer",ja:"企画 / 運営",ini:"SI",photo:PHOTO_INUI,ig:"inuidesu.soccer",
+  {code:"C-03",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Event Director",ja:"イベントディレクション",ini:"SI",photo:PHOTO_INUI,ig:"inuidesu.soccer",
    bio:"イベント全体の企画と当日の運営を担当。進行、導線、会場のオペレーションまでを取りまとめる。"},
   {code:"C-04",name:"RYO TATSUSHIRO",nameJa:"達城 椋",role:"Party Chief",ja:"宴会部長",ini:"RT",photo:PHOTO_TATSUKI,ig:"ryo.tatsushiro",
    bio:"当日のフロアを温める役まわり。はじめて来た方が輪に入りやすいよう、場の空気をつくる。"},
   /* Instagram が分かれば ig を足してください。 */
   {code:"C-05",name:"SHOGO IWATA",nameJa:"岩田 紹吾",role:"Operations",ja:"管理運営",ini:"SI",photo:PHOTO_IWATA,
    bio:"運営まわりの管理を担当。当日までの準備と、各所との調整を受け持つ。"},
+  /* 写真・Instagram が届いたら photo / ig を足してください。 */
+  {code:"C-06",name:"SHORI KONISHI",nameJa:"小西 将理",role:"MC",ja:"MC / 進行",ini:"SK",
+   bio:"当日の進行を担当。オープニングからクロージングまで、夜の流れをつくる。"},
+];
+/* 公式クレジット。ロゴ画像が届いたら logo にデータ URI を入れてください。 */
+const PARTNERS = [
+  {kind:"Partner", name:"STREET PV", ja:"映像制作パートナー", logo:null},
+  {kind:"Sponsor", name:"TOPICO",    ja:"株式会社TOPICO",     logo:null}
 ];
 const PLANS = [
   {code:"T-01",name:"Influencer",ja:"インフルエンサー招待枠",price:"¥0",pn:"招待制 / 審査あり",
@@ -2272,7 +2288,25 @@ ${pageHero("04","Crew","主催・運営メンバー",[
               ${ICON.at}<span>@${esc(m.ig)}</span></a>` : ""}
         </div></article></li>`).join("")}
     </ul>
-    <div class="btn-row mt-md rv">
+  </div>
+</section>
+
+<section class="pad" style="background:var(--mist)" aria-label="パートナー・協賛">
+  <div class="wrap">
+    ${heading("Partners","パートナー・協賛","left")}
+    <ul class="partners mt-lg">
+      ${PARTNERS.map(x=>`<li class="rv">
+        <p class="label">${esc(x.kind)}</p>
+        ${x.logo ? `<img src="${x.logo}" alt="${esc(x.name)}">` : `<p class="nm">${esc(x.name)}</p>`}
+        <p class="ja">${esc(x.ja)}</p>
+      </li>`).join("")}
+    </ul>
+  </div>
+</section>
+
+<section class="pad" aria-label="次のご案内">
+  <div class="wrap">
+    <div class="btn-row rv">
       <a class="btn primary" href="#/ticket">参加費を確認する ${ARROW}</a>
       <a class="btn ghost" href="#/entry">参加申込へ ${ARROW}</a>
     </div>
