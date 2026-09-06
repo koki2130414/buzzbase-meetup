@@ -1739,10 +1739,11 @@ const PROGRAM = [
 const PAST_GUESTS = [];
 const CREW = [
   {code:"C-01",name:"HANKUN",nameJa:"半谷 一太",role:"Organizer",ja:"主催 / 総合プロデュース",ini:"HK",photo:PHOTO_HANKUN,ig:"h13i_14",bio:"カルチャーとビジネスの接続をテーマに、招待制イベントの企画・運営を手がける。BUZZBASE の立ち上げから全体設計を担当。"},
-  {code:"C-02",name:"STREETPV",role:"Co-Organizer",ja:"共催 / 映像ディレクション",ini:"SP",bio:"ストリートカルチャーを軸にした映像制作チーム。当日のオフィシャル撮影とアーカイブ映像の制作を担当。"},
-  {code:"C-03",name:"KOKI NIIMI",nameJa:"新見 康樹",role:"AI Creator",ja:"AIクリエイター",ini:"KN",photo:PHOTO_KOKI,ig:"_ko_213",
+  /* 素材が揃うまで非表示。ロゴか写真をもらえたら、この行のコメントを外してください。
+  {code:"C-02",name:"STREETPV",role:"Co-Organizer",ja:"共催 / 映像ディレクション",ini:"SP",bio:"ストリートカルチャーを軸にした映像制作チーム。当日のオフィシャル撮影とアーカイブ映像の制作を担当。"}, */
+  {code:"C-02",name:"KOKI NIIMI",nameJa:"新見 康樹",role:"AI Creator",ja:"AIクリエイター",ini:"KN",photo:PHOTO_KOKI,ig:"_ko_213",
    bio:"AIを使った制作を軸に、公式サイトの設計・運用と当日の記録まわりを担当。BUZZBASE の発信を裏側から支える。"},
-  {code:"C-04",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Producer",ja:"企画 / 運営",ini:"SI",photo:PHOTO_INUI,
+  {code:"C-03",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Producer",ja:"企画 / 運営",ini:"SI",photo:PHOTO_INUI,
    bio:"イベント全体の企画と当日の運営を担当。進行、導線、会場のオペレーションまでを取りまとめる。"},
 ];
 const PLANS = [
@@ -2181,7 +2182,7 @@ ${pageHero("03","Program","当日の流れ",[
 PAGES["/crew"] = () => `
 ${pageHero("04","Crew","主催・運営メンバー",[
   SITE.presenter + "。この夜を設計し、当日の空気をつくるチーム。",
-  "企画、映像、音と光、マッチング、そして招待の審査まで。それぞれの担当が、参加者の体験を裏側から支えています。"])}
+  "企画と当日の運営、記録まわり、そして招待の審査まで。少人数で、参加者の体験を裏側から支えています。"])}
 <section class="pad" aria-label="運営メンバー一覧">
   <div class="wrap">
     <ul class="crew">
