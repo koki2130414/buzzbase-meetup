@@ -770,6 +770,10 @@ form.entry{display:flex;flex-direction:column;gap:32px}
 .missions .no{flex:none;font-family:var(--display);font-weight:700;font-size:18px;color:var(--red);letter-spacing:.04em}
 .partners{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:16px}
 @media(min-width:640px){.partners{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.partners{grid-template-columns:repeat(3,1fr)}}
+.partners .nm.jp{font-family:var(--jp);text-transform:none;letter-spacing:.06em}
+.partners .pt-link{display:block;text-decoration:none;color:inherit;transition:opacity .3s}
+.partners .pt-link:hover .nm,.partners .pt-link:focus-visible .nm{color:var(--red)}
 .partners li{background:#fff;border:1px solid var(--line);border-radius:4px;padding:30px 26px;text-align:center}
 .partners .label{margin:0;color:var(--red)}
 .partners .nm{margin:14px 0 0;font-family:var(--display);font-weight:700;text-transform:uppercase;
@@ -1827,7 +1831,8 @@ const CREW = [
 /* 公式クレジット。ロゴ画像が届いたら logo にデータ URI を入れてください。 */
 const PARTNERS = [
   {kind:"Partner", name:"STREET PV", ja:"映像制作パートナー", logo:null},
-  {kind:"Sponsor", name:"TOPICO",    ja:"株式会社TOPICO",     logo:null}
+  {kind:"Sponsor", name:"TOPICO",    ja:"株式会社TOPICO",     logo:null},
+  {kind:"Partner", name:"にいみ農園", ja:"栃木・下野の米農家", logo:null, url:"https://213nouen.com/"}
 ];
 const PLANS = [
   {code:"T-01",name:"Influencer",ja:"インフルエンサー招待枠",price:"¥0",pn:"招待制 / 審査あり",
@@ -2331,11 +2336,15 @@ ${pageHero("04","Crew","主催・運営メンバー",[
   <div class="wrap">
     ${heading("Partners","パートナー・協賛","left")}
     <ul class="partners mt-lg">
-      ${PARTNERS.map(x=>`<li class="rv">
+      ${PARTNERS.map(x=>{
+        const jp = /[^\x00-\x7F]/.test(x.name) ? " jp" : "";
+        const body = x.logo ? `<img src="${x.logo}" alt="${esc(x.name)}">`
+                            : `<p class="nm${jp}">${esc(x.name)}</p>`;
+        return `<li class="rv">
         <p class="label">${esc(x.kind)}</p>
-        ${x.logo ? `<img src="${x.logo}" alt="${esc(x.name)}">` : `<p class="nm">${esc(x.name)}</p>`}
+        ${x.url ? `<a class="pt-link" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${body}</a>` : body}
         <p class="ja">${esc(x.ja)}</p>
-      </li>`).join("")}
+      </li>`;}).join("")}
     </ul>
   </div>
 </section>
