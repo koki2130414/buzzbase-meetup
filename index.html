@@ -548,6 +548,18 @@ tbody th,tbody td{padding:20px 16px 20px 0;border-bottom:1px solid var(--line);v
 tbody th{font-family:var(--display);font-weight:500;text-transform:uppercase;font-size:15px;letter-spacing:.08em;white-space:nowrap}
 td.v{font-family:var(--display);font-weight:400;color:var(--rose-deep);font-size:16px;white-space:nowrap}
 td.n{font-size:12px;line-height:1.9;color:var(--ink-soft)}
+/* スマホでは表をカードに組み替え、横スクロールをなくす */
+@media(max-width:719px){
+  .scroll-x{overflow-x:visible}
+  .scroll-x table{min-width:0;display:block}
+  .scroll-x thead{display:none}
+  .scroll-x tbody{display:block}
+  .scroll-x tbody tr{display:block;border:1px solid var(--line);border-radius:4px;padding:18px 20px;margin-bottom:12px}
+  .scroll-x tbody th,.scroll-x tbody td{display:block;padding:0;border:none;white-space:normal}
+  .scroll-x tbody th{font-size:12px;letter-spacing:.2em;color:var(--red)}
+  .scroll-x tbody td.v{margin-top:8px;font-size:19px;color:var(--ink)}
+  .scroll-x tbody td.n{margin-top:8px}
+}
 
 /* ---------- about / points ---------- */
 .points{display:flex;flex-direction:column}
@@ -599,6 +611,12 @@ td.n{font-size:12px;line-height:1.9;color:var(--ink-soft)}
 .crew article:hover .ph img{transform:scale(1.04)}
 .crew .ph .ini{font-family:var(--display);font-weight:300;font-size:clamp(2.6rem,8vw,4rem);color:rgba(51,51,62,.14)}
 .crew .ph .wash{position:absolute;inset:0;background:var(--grad-soft);opacity:.5;pointer-events:none}
+/* 主催者のカードだけ大きく扱う */
+@media(min-width:640px){.crew li.lead{grid-column:span 2}
+  .crew li.lead article{flex-direction:row;gap:26px;align-items:flex-start}
+  .crew li.lead .ph{flex:0 0 46%;aspect-ratio:4/5}
+  .crew li.lead h3{font-size:1.9rem}}
+@media(min-width:1000px){.crew li.lead .ph{flex:0 0 40%}}
 .crew .ph .code{position:absolute;left:12px;top:12px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.92);
   font-family:var(--display);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--rose-ink)}
 .crew h3{margin:0;font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:25px;line-height:1;letter-spacing:.03em}
@@ -754,12 +772,19 @@ footer.site .bot{display:flex;flex-direction:column;gap:14px;border-top:1px soli
 .linkish:hover{color:var(--rose-deep)}
 
 /* ---------- floating ---------- */
-#sound{position:fixed;left:16px;bottom:16px;z-index:40;display:flex;align-items:center;gap:10px;
+#sound{position:fixed;left:16px;bottom:16px;z-index:30;display:flex;align-items:center;gap:10px;
   padding:9px 15px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.95);
   cursor:pointer;box-shadow:0 8px 22px -14px rgba(80,70,140,.6);
   transition:border-color .3s,transform .3s var(--ease)}
 #sound:hover,#sound:focus-visible{border-color:var(--lilac);transform:translateY(-2px)}
 @media(min-width:900px){#sound{left:24px;bottom:24px}}
+/* スクロール中は左へ退避し、本文やボタンを塞がない */
+#sound.tucked{transform:translateX(calc(-100% + 40px));opacity:.7}
+#sound.tucked:hover,#sound.tucked:focus-visible{transform:translateX(0);opacity:1}
+@media(max-width:899px){#sound{padding:8px 13px}
+  #sound.tucked{transform:translateX(calc(-100% + 34px))}}
+#intro .intro-meta{margin:2px 0 0;font-family:var(--display);font-weight:500;text-transform:uppercase;
+  font-size:11.5px;letter-spacing:.2em;color:var(--ink-soft);text-align:center;line-height:2}
 #sound .d{width:6px;height:6px;border-radius:50%;background:var(--line-2)}
 #sound.on .d{background:var(--rose-deep)}
 #sound .label{color:var(--ink-soft);letter-spacing:.22em;font-size:10px}
@@ -1594,6 +1619,7 @@ M4823 633 c9 -2 23 -2 30 0 6 3 -1 5 -18 5 -16 0 -22 -2 -12 -5z M4403 623 c9
 
   <div class="stage" id="stageGate">
     <p class="label rose" style="margin:0">Sound On — Invitation Only</p>
+    <p class="intro-meta" id="introMeta"></p>
     <h1 class="brand"><svg class="mark" viewBox="0 0 2166 660" aria-label="BUZZBASE"><use href="#bbLogo"/></svg></h1>
     <button class="btn primary" id="introStart">タップしてはじめる <span class="arw" aria-hidden="true">→</span></button>
     <p class="label" style="margin:0">This experience plays sound</p>
@@ -1645,13 +1671,14 @@ const EVENT = {
 const LINKS = {
   /* Google フォームの URL が決まったら、ここに貼るだけで
      ENTRY ページのボタンとフッターのリンクが有効になります。 */
-  entryForm:"",
+  entryForm:"",   /* ← Google フォームの URL を貼ると、サイト全体が「受付中」に切り替わります */
   instagram:"https://www.instagram.com/buzzbase.05.22/",
   handle:"@buzzbase.05.22"
 };
+const ENTRY_OPEN = !!LINKS.entryForm;
 const NEWS = [
   {date:"2026.08.01", text:"第3回「BUZZBASE MEETUP VOL.03」の開催が決定しました。", href:"#/about"},
-  {date:"2026.08.15", text:"参加申込の受付を開始しました。ご応募をお待ちしております。", href:"#/entry"}
+  ...(ENTRY_OPEN ? [{date:"2026.08.15", text:"参加申込の受付を開始しました。ご応募をお待ちしております。", href:"#/entry"}] : [])
 ];
 const NAV = [
   {href:"/",        label:"Home",     ja:"ホーム",             file:null},
@@ -1674,7 +1701,7 @@ const FILES = [
 const STATS = [
   {label:"Total Followers",ja:"総フォロワー",value:3000000,suffix:"+",grouped:true,note:"参加予定インフルエンサーのSNS総リーチ数（複数プラットフォーム合算）。"},
   {label:"Invited Guests",ja:"招待者",value:100,suffix:"名",note:"ご招待した方だけが参加できる、少人数のクローズドな会です。"},
-  {label:"Contents",ja:"コンテンツ",value:6,suffix:" Files",note:"当日の体験は6つのコンテンツで構成しています。"},
+  {label:"Contents",ja:"コンテンツ",value:6,suffix:" Files",note:"当日の進行は、受付からクロージングまで6つのパートで構成しています。"},
   {label:"Running Time",ja:"開催時間",value:120,suffix:" Min",note:"21:00から23:00まで。短い時間に、出会いを凝縮しています。"}
 ];
 const BREAKDOWN = [
@@ -1697,7 +1724,7 @@ const ABOUT = [
    points:["会場非公開・完全招待制のクローズド運営","オフィシャル撮影による当日のアーカイブ提供","運営によるマッチングサポートで初参加でも孤立しない"]}
 ];
 const PROGRAM = [
-  {time:"21:00",title:"Reception",ja:"受付・入場",tag:"Open",body:"招待コードの確認後、ゲストは順次入場。エントランスでウェルカムドリンクとネームタグをお渡しします。"},
+  {time:"20:45",title:"Reception",ja:"受付・入場",tag:"Open",body:"20:45 に受付を開始します。招待コードの確認後、ゲストは順次入場。エントランスでウェルカムドリンクとネームタグをお渡しします。21:00 のオープニングまでにお越しください。"},
   {time:"21:15",title:"Opening",ja:"オープニング",tag:"Stage",body:"主催によるオープニングアナウンス。この夜のルールと、参加者同士のつながり方を共有します。"},
   {time:"21:30",title:"Cross Session",ja:"クロスセッション",tag:"Main",body:"インフルエンサーと経営者を組み合わせた少人数グループでのトークセッション。運営がテーマと導線を設計します。"},
   {time:"22:05",title:"Free Networking",ja:"フリーネットワーキング",tag:"Main",body:"フロア全体を開放。気になる相手へ自由に声をかけられる時間。運営クルーが紹介のサポートに入ります。"},
@@ -1714,7 +1741,7 @@ const CREW = [
 ];
 const PLANS = [
   {code:"T-01",name:"Influencer",ja:"インフルエンサー招待枠",price:"¥0",pn:"招待制 / 審査あり",
-   inc:["入場（1名）","ウェルカムドリンク","オフィシャル撮影データ","参加者リストの事前共有"],cond:"審査通過後、ご招待コードをお送りします。"},
+   inc:["入場（1名）","ウェルカムドリンク","オフィシャル撮影データ"],cond:"審査通過後、ご招待コードをお送りします。"},
   {code:"T-02",name:"Executive",ja:"経営者・役員枠",price:"¥15,000",pn:"税込 / 1名",featured:true,
    inc:["入場（1名）","フリードリンク・フード","オフィシャル撮影データ","運営によるマッチングサポート","アフターコミュニティへの招待"],cond:"お申込み後、運営より決済方法をご案内いたします。"},
   {code:"T-03",name:"Partner",ja:"協賛・パートナー枠",price:"Ask",pn:"内容に応じてご相談",
@@ -1724,7 +1751,8 @@ const TICKET_NOTES = [
   "本イベントは完全招待制です。お申込み後、運営による確認をもってご参加が確定します。",
   "参加費のお支払い方法は、ご招待確定後に個別でご案内いたします。",
   "お申込み内容に事実と異なる記載があった場合、ご参加をお断りすることがあります。",
-  "開催8日前以降のキャンセルについては、参加費の全額をご負担いただきます。",
+  "有料枠（EXECUTIVE）のキャンセルは、会場をご案内する開催3日前の前日までは無償で承ります。開催3日前以降のキャンセルについては、参加費の全額をご負担いただきます。",
+  "INFLUENCER 枠（¥0）にキャンセル料は発生しません。前日までにご連絡ください。PARTNER 枠は個別のお取り決めによります。",
   "会場内は20歳未満の方および酒気を帯びた状態での入場をお断りしております。"
 ];
 const ACCESS_ROWS = [
@@ -1736,7 +1764,9 @@ const ACCESS_ROWS = [
   {k:"Dress Code",ja:"ドレスコード",v:"BLACK / RED を一点"}
 ];
 const ACCESS_STEPS = [
-  {t:"申込フォームの送信",b:"参加申込フォームより必要事項をご入力ください。所要時間は約3分です。"},
+  {t:"参加申込", get b(){ return ENTRY_OPEN
+      ? "参加申込フォームより必要事項をご入力ください。所要時間は約3分です。"
+      : "現在フォームを準備中です。Instagram（@buzzbase.05.22）の DM よりご連絡ください。"; }},
   {t:"運営による確認",b:"ご入力内容をもとに運営で確認いたします。結果は原則5営業日以内にメールでご連絡します。"},
   {t:"招待コードの送付",b:"ご参加が確定した方にのみ、招待コードと会場情報をお送りします。他者への共有はご遠慮ください。"},
   {t:"当日の入場",b:"受付にて招待コードをご提示ください。ご本人確認をもって入場となります。"}
@@ -1744,7 +1774,7 @@ const ACCESS_STEPS = [
 const ACCESS_NOTES = [
   "会場の住所・名称はご招待者様にのみ、開催3日前を目安にお伝えします。",
   "SNS等での会場情報の公開はご遠慮ください。",
-  "会場内ではオフィシャルクルーによる撮影を行います。撮影された写真・映像は広報物に使用される場合があります。",
+  "会場内ではオフィシャルクルーによる撮影を行います。撮影した写真・映像のうち、受付でご同意いただいた方が写っているものに限り、SNS・Web サイト等の広報物に使用することがあります。",
   "お車でのご来場はご遠慮ください。"
 ];
 const PAST = [
@@ -1758,10 +1788,12 @@ const VOICE = [
   {text:"同じく差し替え用の枠です。お名前の表記（実名 / イニシャル / 匿名）はご指定ください。",who:"参加者 B 様 / 経営者"},
   {text:"協賛企業様からのコメントもこちらに掲載できます。掲載の可否は事前にご確認ください。",who:"協賛企業 C 様 / パートナー"}
 ];
+/* 実データが揃うまで非表示。true にすると復活します。 */
+const SHOW = { past:false, voice:false, sponsors:false };
 const SPONSORS = ["Logo 01","Logo 02","Logo 03","Logo 04","Logo 05","Logo 06","Logo 07","Logo 08"];
 const FAQ = [
   {q:"招待がなくても申し込めますか？",
-   a:"はい。申込フォームからどなたでもご応募いただけます。内容を確認のうえ、ご参加が確定した方に招待コードをお送りします。"},
+   a:"ご応募自体はどなたでも可能です。ただし本イベントは完全招待制のため、いただいた内容を運営で確認し、ご招待が確定した方にのみ招待コードをお送りします。一般販売は行っておりません。"},
   {q:"会場はいつわかりますか？",
    a:"開催3日前を目安に、ご招待者様へメールでお知らせします。会場は非公開のため、SNS等での公開はご遠慮ください。"},
   {q:"一人で参加しても大丈夫ですか？",
@@ -1935,7 +1967,7 @@ PAGES["/"] = () => `
     ${heading("Information","インフォメーション")}
     <ul class="info">
       ${[["Date",EVENT.date,null,false],["Time",EVENT.time,null,false],["Venue",EVENT.venue,EVENT.venueNote,true],
-         ["Guests",EVENT.guests,null,true],["Access",EVENT.access,null,false],["Status","Entry Open","申込受付中",false]]
+         ["Guests",EVENT.guests,null,true],["Access",EVENT.access,null,false],["Status", ENTRY_OPEN?"Entry Open":"Coming Soon", ENTRY_OPEN?"申込受付中":"受付準備中", false]]
         .map(([k,v,n,jp])=>`<li class="rv">
           <p class="k" style="margin:0"><i aria-hidden="true"></i><span class="label">${esc(k)}</span></p>
           <p class="v${jp?" jp":""}">${esc(v)}</p>${n?`<p class="n">${esc(n)}</p>`:""}</li>`).join("")}
@@ -1967,6 +1999,8 @@ ${bigdrift("Invitation Only", -0.16)}
   </div>
 </section>
 
+`
++ (SHOW.past ? `
 <section class="pad" aria-label="過去の開催">
   <span class="blob a" style="left:-8%;top:12%;width:380px;height:380px;opacity:.3" aria-hidden="true"></span>
   ${vlabel("Archive","l","top:14%")}
@@ -1985,7 +2019,8 @@ ${bigdrift("Invitation Only", -0.16)}
     </ul>
   </div>
 </section>
-
+` : "")
++ (SHOW.voice ? `
 <section class="pad" style="background:var(--mist)" aria-label="参加者の声">
   <span class="halftone" style="right:4%;top:8%;width:240px;height:240px" aria-hidden="true"></span>
   <div class="wrap" style="position:relative">
@@ -2000,7 +2035,8 @@ ${bigdrift("Invitation Only", -0.16)}
     </ul>
   </div>
 </section>
-
+` : "")
++ (SHOW.sponsors ? `
 <section class="pad" aria-label="協賛・パートナー">
   <div class="wrap">
     ${heading("Sponsors","協賛・パートナー")}
@@ -2010,6 +2046,8 @@ ${bigdrift("Invitation Only", -0.16)}
     </ul>
   </div>
 </section>
+` : "")
++ `
 
 <section class="pad" style="background:var(--mist)" aria-label="よくある質問">
   <span class="blob d" style="right:-8%;bottom:6%;width:360px;height:360px;opacity:.32" aria-hidden="true"></span>
@@ -2033,7 +2071,7 @@ ${bigdrift("Buzz the Culture", 0.14, true)}
 
 <section class="reg pad" aria-labelledby="regHead">
   ${floaters([{t:"card",x:4,y:22,sp:.18,ph:1.1},{t:"chip",x:92,y:64,sp:-.14,ph:3.3,sm:1}])}
-  ${vlabel("Entry Open","l","top:20%")}
+  ${vlabel(ENTRY_OPEN?"Entry Open":"Coming Soon","l","top:20%")}
   <div class="wrap" style="position:relative;z-index:3">
     <div class="panel rv">
       <span class="ghosttype" aria-hidden="true">Registration</span>
@@ -2042,7 +2080,7 @@ ${bigdrift("Buzz the Culture", 0.14, true)}
         <h2 id="regHead">次のコラボも、新しいビジネスも、人生を変える出会いも。<br>その始まりは、この夜かもしれない。</h2>
         <p class="body">本イベントは完全招待制です。ご参加を希望されるインフルエンサー様・企業様は、申込フォームよりご応募ください。</p>
         <div class="btn-row">
-          <a class="btn primary" href="#/entry">申込フォームへ ${ARROW}</a>
+          <a class="btn primary" href="#/entry">${ENTRY_OPEN?"申込フォームへ":"参加申込について"} ${ARROW}</a>
           <a class="btn ghost" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">質問はDMで ${ARROW}</a>
         </div>
         <a class="sns" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.at}${LINKS.handle}</a>
@@ -2141,7 +2179,7 @@ ${pageHero("04","Crew","主催・運営メンバー",[
 <section class="pad" aria-label="運営メンバー一覧">
   <div class="wrap">
     <ul class="crew">
-      ${CREW.map(m=>`<li class="rv"><article>
+      ${CREW.map((m,i)=>`<li class="rv${i===0?" lead":""}"><article>
         <div class="ph">
           ${m.photo ? `<img src="${m.photo}" alt="${esc(m.name)}（${esc(m.ja)}）のポートレート" loading="lazy" decoding="async">`
                     : `<span class="ini" aria-hidden="true">${m.ini}</span><span class="wash" aria-hidden="true"></span>`}
@@ -2192,7 +2230,7 @@ ${pageHero("05","Ticket","参加費",[
     <ul class="notes mt-lg">
       ${TICKET_NOTES.map(n=>`<li class="rv"><span class="ic">${ICON.alert}</span><span>${esc(n)}</span></li>`).join("")}
     </ul>
-    <div class="mt-md rv"><a class="btn primary" href="#/entry">申込フォームへ ${ARROW}</a></div>
+    <div class="mt-md rv"><a class="btn primary" href="#/entry">${ENTRY_OPEN?"申込フォームへ":"参加申込について"} ${ARROW}</a></div>
   </div>
 </section>`;
 
@@ -2317,8 +2355,9 @@ PAGES["/privacy"] = () => `
       <p>ご本人の同意がある場合、または法令に基づき開示が必要な場合を除き、お預かりした情報を第三者へ提供・販売・共有することはありません。</p></section>
 
     <section><h2>5. 写真・映像の取り扱い</h2>
-      <p>当日は記録のため、会場内で写真・映像を撮影します。撮影した写真・映像を SNS・Web サイトなど外部へ公開することはありません。</p>
-      <p class="n">今後、外部公開を伴う撮影を行う場合は、事前に改めてご案内し、ご同意をいただいたうえで実施します。</p></section>
+      <p>当日は記録のため、会場内で写真・映像を撮影します。撮影した写真・映像のうち、<strong>受付で掲載にご同意いただいた方が写っているものに限り</strong>、SNS・Web サイト・次回開催の告知物などに使用することがあります。</p>
+      <p>ご同意いただいていない方が写り込んだ素材は、外部へ公開しません。掲載後に取り下げをご希望の場合も、下記の窓口までご連絡いただければ速やかに対応します。</p>
+      <p class="n">掲載の可否にかかわらず、ご参加いただいた方にはご自身が写ったオフィシャル撮影データをお渡しします。</p></section>
 
     <section><h2>6. 開示・訂正・削除のご請求</h2>
       <p>ご本人からのお申し出により、お預かりしている情報の開示・訂正・削除に対応します。ご本人であることを確認させていただいたうえで対応いたします。</p></section>
@@ -2386,10 +2425,12 @@ $("#footMeta").innerHTML = `<div><dt>Date</dt><dd>${esc(EVENT.date)}</dd></div>
   <div><dt>Time</dt><dd>${esc(EVENT.time)}</dd></div>`;
 $("#footCopy").textContent = `© ${new Date().getFullYear()} ${SITE.name}. All rights reserved.`;
 $("#introFoot").textContent = SITE.presenter;
+$("#introMeta").innerHTML = esc(EVENT.date) + " ／ " + esc(EVENT.time) + "<br>" + esc(EVENT.venue) + " — 完全招待制ミートアップ";
 
 const header = $("#siteHeader"), pagetop = $("#pagetop");
 const onScroll = () => {
   header.classList.toggle("scrolled", window.scrollY > 12);
+  $("#sound").classList.toggle("tucked", window.scrollY > 200);
   pagetop.classList.toggle("show", window.scrollY > 600);
 };
 window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
