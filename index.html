@@ -1688,7 +1688,8 @@ const NAV = [
   {href:"/crew",    label:"Crew",     ja:"主催・運営メンバー",  file:"04"},
   {href:"/ticket",  label:"Ticket",   ja:"参加費",             file:"05"},
   {href:"/access",  label:"Access",   ja:"開催概要",           file:"06"},
-  {href:"/entry",   label:"Entry",    ja:"参加申込",           file:"07"}
+  {href:"/guests",  label:"Guests",   ja:"参加者一覧",          file:"07"},
+  {href:"/entry",   label:"Entry",    ja:"参加申込",           file:"08"}
 ];
 const FILES = [
   {file:"01",title:"Numbers",ja:"イベントデータ",href:"/numbers",sum:"総フォロワー数、招待人数、そして120分。この夜を数字で見てみます。"},
@@ -1696,7 +1697,8 @@ const FILES = [
   {file:"03",title:"Program",ja:"当日の流れ",href:"/program",sum:"21:00 の受付から 23:00 のクロージングまで、当日の流れをご案内します。"},
   {file:"04",title:"Crew",ja:"主催・運営メンバー",href:"/crew",sum:"この場をつくる主催者と運営チームを、担当ごとにご紹介します。"},
   {file:"05",title:"Ticket",ja:"参加費",href:"/ticket",sum:"招待区分ごとの参加費と、お申込み前にご確認いただきたいこと。"},
-  {file:"06",title:"Access",ja:"開催概要",href:"/access",sum:"開催日時と、会場のご案内方法・当日のお願いをまとめました。"}
+  {file:"06",title:"Access",ja:"開催概要",href:"/access",sum:"開催日時と、会場のご案内方法・当日のお願いをまとめました。"},
+  {file:"07",title:"Guests",ja:"参加者一覧",href:"/guests",sum:"これまでの回にお越しいただいた方を、掲載のご了承をいただいた順にご紹介します。"}
 ];
 const STATS = [
   {label:"Total Followers",ja:"総フォロワー",value:3000000,suffix:"+",grouped:true,note:"参加予定インフルエンサーのSNS総リーチ数（複数プラットフォーム合算）。"},
@@ -1731,6 +1733,10 @@ const PROGRAM = [
   {time:"22:40",title:"Special Showcase",ja:"スペシャルショーケース",tag:"Special",body:"当日まで非公開のゲストによるショーケース。会場の空気が一段切り替わる、この夜のハイライト。"},
   {time:"22:55",title:"Closing",ja:"クロージング",tag:"End",body:"全体写真の撮影と次回開催のアナウンス。以降はアフター案内をご招待者様にのみお伝えします。"}
 ];
+/* 過去回にご参加いただいた方。掲載のご了承をいただいた方のみをここに追加します。
+   { vol:"VOL.02", name:"お名前", role:"肩書き / 活動", ig:"instagram_id", photo:null }
+   写真がない場合は photo を省略すると、イニシャルの枠が出ます。 */
+const PAST_GUESTS = [];
 const CREW = [
   {code:"C-01",name:"HANKUN",nameJa:"半谷 一太",role:"Organizer",ja:"主催 / 総合プロデュース",ini:"HK",photo:PHOTO_HANKUN,ig:"h13i_14",bio:"カルチャーとビジネスの接続をテーマに、招待制イベントの企画・運営を手がける。BUZZBASE の立ち上げから全体設計を担当。"},
   {code:"C-02",name:"STREETPV",role:"Co-Organizer",ja:"共催 / 映像ディレクション",ini:"SP",bio:"ストリートカルチャーを軸にした映像制作チーム。当日のオフィシャル撮影とアーカイブ映像の制作を担当。"},
@@ -2267,7 +2273,7 @@ ${pageHero("06","Access","開催概要",[
 </section>`;
 
 PAGES["/entry"] = () => `
-${pageHero("07","Entry","参加申込",[
+${pageHero("08","Entry","参加申込",[
   "ご応募いただいた内容は、運営が一件ずつ拝見します。",
   "ご入力いただいた内容をもとに運営で確認し、ご参加が確定した方にのみ招待コードと会場情報をお送りします。"])}
 <div class="wrap pad">
@@ -2314,6 +2320,46 @@ ${pageHero("07","Entry","参加申込",[
   </div>
 </div>`;
 
+PAGES["/guests"] = () => `
+${pageHero("07","Guests","参加者一覧",[
+  "これまでの BUZZBASE MEETUP にお越しいただいた方をご紹介します。",
+  "掲載は任意です。ご本人から掲載のご了承をいただいた方のみを、順次このページに追加しています。"])}
+<div class="wrap pad">
+  ${heading("Past Guests","過去回の参加者","left")}
+  ${PAST_GUESTS.length ? `
+  <ul class="crew mt-lg">
+    ${PAST_GUESTS.map(g=>`<li class="rv"><article>
+      <div class="ph">
+        ${g.photo ? `<img src="${g.photo}" alt="${esc(g.name)}のポートレート" loading="lazy" decoding="async">`
+                  : `<span class="ini" aria-hidden="true">${esc((g.name||"?").slice(0,2))}</span><span class="wash" aria-hidden="true"></span>`}
+        ${shatter(12)}
+        <span class="code">${esc(g.vol)}</span>
+      </div>
+      <div>
+        <h3>${esc(g.name)}</h3>
+        <p class="role">${esc(g.role||"")}</p>
+        ${g.ig ? `<a class="crew-ig" href="https://www.instagram.com/${esc(g.ig)}/" target="_blank" rel="noopener noreferrer">
+            ${ICON.at}<span>@${esc(g.ig)}</span></a>` : ""}
+      </div></article></li>`).join("")}
+  </ul>` : `
+  <div class="entry-lead mt-lg rv">
+    <p class="label">Coming Soon — 準備中</p>
+    <h2 class="lead-h">掲載のご了承をいただいた方から公開します</h2>
+    <p class="lead-p">このページには、過去の BUZZBASE MEETUP にご参加いただいた方のお名前と SNS アカウントを掲載します。掲載は任意で、ご本人から了承をいただいた方のみを載せます。現在ご確認をお願いしているところです。</p>
+    <p class="lead-n">掲載を希望される方、または一度掲載した内容の取り下げをご希望の方は、<a href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">Instagram ${LINKS.handle}</a> の DM よりご連絡ください。お預かりした情報の扱いは<a href="#/privacy">プライバシーポリシー</a>に記載しています。</p>
+  </div>`}
+
+  <div class="mt-lg rv">
+    <p class="label">Guest Ratio — 参加者の内訳</p>
+    <p class="lead-p" style="margin-top:12px;max-width:44em">お名前の掲載とは別に、どのような方が集まる場なのかは NUMBERS ページの「参加者の内訳」でご確認いただけます。インフルエンサー・経営者・クリエイターの構成比と、それぞれの選定基準を掲載しています。</p>
+  </div>
+
+  <div class="btn-row mt-md rv">
+    <a class="btn ghost" href="#/numbers">参加者の内訳を見る ${ARROW}</a>
+    <a class="btn primary" href="#/entry">${ENTRY_OPEN?"申込フォームへ":"参加申込について"} ${ARROW}</a>
+  </div>
+</div>`;
+
 PAGES["/privacy"] = () => `
 <header class="phero" aria-label="プライバシーポリシー">
   <span class="blob a" style="left:-6%;top:-30%;width:420px;height:420px;opacity:.45" aria-hidden="true"></span>
@@ -2346,6 +2392,7 @@ PAGES["/privacy"] = () => `
         <li>会場・受付情報など、当日のご案内の送付</li>
         <li>当日の受付照合および運営</li>
         <li>次回以降の BUZZBASE MEETUP のご案内</li>
+        <li>ご同意いただいた方について、公式サイトの「参加者一覧」への掲載</li>
       </ul></section>
 
     <section><h2>3. 保存期間</h2>
@@ -2359,10 +2406,14 @@ PAGES["/privacy"] = () => `
       <p>ご同意いただいていない方が写り込んだ素材は、外部へ公開しません。掲載後に取り下げをご希望の場合も、下記の窓口までご連絡いただければ速やかに対応します。</p>
       <p class="n">掲載の可否にかかわらず、ご参加いただいた方にはご自身が写ったオフィシャル撮影データをお渡しします。</p></section>
 
-    <section><h2>6. 開示・訂正・削除のご請求</h2>
+    <section><h2>6. お名前・SNS アカウントの掲載について</h2>
+      <p>公式サイトの「参加者一覧」ページに、ご参加いただいた方のお名前・肩書き・SNS アカウント・お写真を掲載することがあります。掲載は任意で、<strong>参加申込時に掲載への同意をいただいた方のみ</strong>を対象とします。同意されない場合でも、選考やご参加に影響することはありません。</p>
+      <p>掲載後の取り下げは、下記のお問い合わせ窓口までご連絡いただければ速やかに対応します。</p></section>
+
+    <section><h2>7. 開示・訂正・削除のご請求</h2>
       <p>ご本人からのお申し出により、お預かりしている情報の開示・訂正・削除に対応します。ご本人であることを確認させていただいたうえで対応いたします。</p></section>
 
-    <section><h2>7. お問い合わせ窓口</h2>
+    <section><h2>8. お問い合わせ窓口</h2>
       <p>本ポリシーおよび個人情報の取り扱いに関するお問い合わせは、下記までご連絡ください。</p>
       <p><strong>BUZZBASE MEETUP 運営事務局</strong></p>
       <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.out}Instagram ${LINKS.handle} の DM</a></section>
