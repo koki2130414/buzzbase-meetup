@@ -747,6 +747,11 @@ form.entry{display:flex;flex-direction:column;gap:32px}
 .movie .cap{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;margin:18px 0 0}
 .movie .cap .label{margin:0;color:var(--red)}
 .movie .cap p{margin:0;font-size:12.5px;line-height:2;color:var(--ink-soft)}
+.movie .unmute{display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:999px;
+  border:1px solid var(--line-2);background:#fff;cursor:pointer;font-family:var(--jp);font-size:12px;
+  letter-spacing:.06em;color:var(--ink);transition:border-color .3s,color .3s,transform .3s var(--ease)}
+.movie .unmute:hover,.movie .unmute:focus-visible{border-color:var(--red);color:var(--red);transform:translateY(-1px)}
+.movie .unmute .ic{font-size:13px;line-height:1}
 .missions{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .missions li{display:flex;align-items:flex-start;gap:18px;padding:22px 24px;background:#fff;
   border:1px solid var(--line);border-radius:4px}
@@ -1976,7 +1981,7 @@ PAGES["/"] = () => `
 <section class="pad-sm" aria-label="ティザー映像">
   <div class="movie rv">
     <div class="frame">
-      <video controls preload="metadata" playsinline poster="${VIDEO_POSTER}"
+      <video id="teaser" controls playsinline muted loop preload="auto" poster="${VIDEO_POSTER}"
              aria-label="BUZZBASE MEETUP VOL.03 ティザー映像">
         <source src="${VIDEO_SRC}" type="video/mp4">
         お使いのブラウザは動画の再生に対応していません。
@@ -1984,7 +1989,10 @@ PAGES["/"] = () => `
     </div>
     <div class="cap">
       <p class="label">Teaser — ティザー映像</p>
-      <p>音が出ます。1分57秒。</p>
+      <button class="unmute" id="teaserUnmute" type="button" aria-pressed="false">
+        <span class="ic" aria-hidden="true">🔇</span><span class="t">音声をオンにする</span>
+      </button>
+      <p>1分57秒。自動再生は音を消した状態ではじまります。</p>
     </div>
   </div>
 </section>
@@ -2583,7 +2591,7 @@ function render(){
     : path === "/404" ? "404 | BUZZBASE MEETUP"
     : path === "/privacy" ? "Privacy | BUZZBASE MEETUP"
     : (NAV.find(n=>n.href===path)?.label || "") + " | BUZZBASE MEETUP";
-  setupReveals(); setupCounters();
+  setupReveals(); setupCounters(); setupTeaser();
   if (path === "/entry") setupForm();
   window.scrollTo(0,0); onScroll();
   if (typeof Motion !== "undefined") Motion.refresh();
@@ -2625,6 +2633,39 @@ function setupReveals(){
     if (sh.getBoundingClientRect().top < window.innerHeight - 60){ sh.classList.add("shown"); return; }
     tio.observe(sh);
   });
+}
+/* ティザー映像。ブラウザは音つきの自動再生を許可しないため、まず消音で再生し、
+   ボタンまたはサイトのサウンド設定で音を出す。通信量節約モードと
+   prefers-reduced-motion のときは自動再生しない。 */
+function setupTeaser(){
+  const v = $("#teaser"); if (!v) return;
+  const btn = $("#teaserUnmute");
+  const saveData = (navigator.connection && navigator.connection.saveData) === true;
+  const paintBtn = () => { if(!btn) return;
+    btn.setAttribute("aria-pressed", String(!v.muted));
+    btn.querySelector(".ic").textContent = v.muted ? "🔇" : "🔊";
+    btn.querySelector(".t").textContent = v.muted ? "音声をオンにする" : "音声をオフにする"; };
+  if (btn) btn.addEventListener("click", () => {
+    v.muted = !v.muted;
+    if (!v.muted && v.paused) v.play().catch(()=>{});
+    paintBtn();
+  });
+  v.addEventListener("volumechange", paintBtn);
+  paintBtn();
+  if (reduced() || saveData) return;
+  v.muted = true;
+  let stopped = false;                       // 利用者が自分で止めたら以後は自動再生しない
+  v.addEventListener("pause", () => { if (!document.hidden && v.currentTime > 0) stopped = true; });
+  v.addEventListener("play", () => { stopped = false; });
+  const go = () => { if (!stopped) v.play().catch(()=>{}); };
+  go();
+  ["loadeddata","canplay"].forEach(ev => v.addEventListener(ev, go, {once:true}));
+  // 画面から外れたら止め、戻ったら再開する
+  if ("IntersectionObserver" in window){
+    new IntersectionObserver(en => en.forEach(x => {
+      if (x.isIntersecting) go(); else if (!v.paused) v.pause();
+    }), {threshold:.25}).observe(v);
+  }
 }
 function setupCounters(){
   const els = $$("[data-count]"); if (!els.length) return;
