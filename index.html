@@ -1728,7 +1728,8 @@ const LINKS = {
      ENTRY ページのボタンとフッターのリンクが有効になります。 */
   entryForm:"https://shokei.me/buzzbase/entry.html",
   instagram:"https://www.instagram.com/buzzbase.05.22/",
-  handle:"@buzzbase.05.22"
+  handle:"@buzzbase.05.22",
+  email:"buzzbase0906@gmail.com"
 };
 const ENTRY_OPEN = !!LINKS.entryForm;
 const NEWS = [
@@ -2184,7 +2185,10 @@ ${bigdrift("Buzz the Culture", 0.14, true)}
           <a class="btn primary" href="#/entry">${ENTRY_OPEN?"申込フォームへ":"参加申込について"} ${ARROW}</a>
           <a class="btn ghost" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">質問はDMで ${ARROW}</a>
         </div>
-        <a class="sns" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.at}${LINKS.handle}</a>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px 26px">
+          <a class="sns" href="mailto:${LINKS.email}">${ICON.mail}${LINKS.email}</a>
+          <a class="sns" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.at}${LINKS.handle}</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2424,7 +2428,7 @@ ${pageHero("08","Entry","参加申込",[
         <h2 class="lead-h">申込フォームを準備しています</h2>
         <p class="lead-p">現在、参加申込フォームを準備中です。公開までしばらくお待ちください。お急ぎの場合や、ご不明な点がある場合は、Instagram の DM よりご連絡ください。運営が直接ご案内いたします。</p>
         <div class="btn-row">
-          <a class="btn primary" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">Instagram の DM で問い合わせる ${ARROW}</a>
+          <a class="btn primary" href="mailto:${LINKS.email}">メールで問い合わせる ${ARROW}</a>
           <a class="btn ghost" href="#/privacy">個人情報の取り扱い ${ARROW}</a>
         </div>
         <p class="lead-n">お預かりする情報の取り扱いについては<a href="#/privacy">プライバシーポリシー</a>をご確認ください。</p>
@@ -2442,8 +2446,9 @@ ${pageHero("08","Entry","参加申込",[
       </div>
       <div class="box">
         <p class="label" style="margin:0">Contact</p>
-        <p>フォームの内容についてご不明な点がある場合は、Instagram の DM からお問い合わせください。</p>
-        <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.out}${LINKS.handle}</a>
+        <p>フォームの内容についてご不明な点がある場合は、メールまたは Instagram の DM からお問い合わせください。</p>
+        <a class="out" href="mailto:${LINKS.email}">${ICON.mail}${LINKS.email}</a>
+        <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer" style="margin-top:10px">${ICON.out}${LINKS.handle}</a>
       </div>
     </aside>
   </div>
@@ -2475,7 +2480,7 @@ ${pageHero("07","Guests","参加者一覧",[
     <p class="label">Coming Soon — 準備中</p>
     <h2 class="lead-h">掲載のご了承をいただいた方から公開します</h2>
     <p class="lead-p">このページには、過去の BUZZBASE MEETUP にご参加いただいた方のお名前と SNS アカウントを掲載します。掲載は任意で、ご本人から了承をいただいた方のみを載せます。現在ご確認をお願いしているところです。</p>
-    <p class="lead-n">掲載を希望される方、または一度掲載した内容の取り下げをご希望の方は、<a href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">Instagram ${LINKS.handle}</a> の DM よりご連絡ください。お預かりした情報の扱いは<a href="#/privacy">プライバシーポリシー</a>に記載しています。</p>
+    <p class="lead-n">掲載を希望される方、または一度掲載した内容の取り下げをご希望の方は、<a href="mailto:${LINKS.email}">${LINKS.email}</a> または <a href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">Instagram ${LINKS.handle}</a> の DM よりご連絡ください。お預かりした情報の扱いは<a href="#/privacy">プライバシーポリシー</a>に記載しています。</p>
   </div>`}
 
   <div class="mt-lg rv">
@@ -2548,7 +2553,8 @@ PAGES["/privacy"] = () => `
     <section><h2>8. お問い合わせ窓口</h2>
       <p>本ポリシーおよび個人情報の取り扱いに関するお問い合わせは、下記までご連絡ください。</p>
       <p><strong>BUZZBASE MEETUP 運営事務局</strong></p>
-      <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">${ICON.out}Instagram ${LINKS.handle} の DM</a></section>
+      <a class="out" href="mailto:${LINKS.email}">${ICON.mail}${LINKS.email}</a>
+      <a class="out" href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer" style="margin-top:10px">${ICON.out}Instagram ${LINKS.handle} の DM</a></section>
 
     <p class="legal-date">最終更新日：2026.09.05</p>
   </div>
@@ -2601,6 +2607,7 @@ $("#footPresenter").textContent = SITE.presenter + " / " + SITE.volume;
 $("#footTag").innerHTML = esc(SITE.tagline) + "<br>完全招待制のプライベートミートアップ。";
 $("#footNav").innerHTML = NAV.map(n=>`<li><a href="#${n.href}"><span class="fno">${n.file||"—"}</span><span class="fname">${n.label}</span></a></li>`).join("");
 $("#footContact").innerHTML = `
+  <li><a href="mailto:${LINKS.email}"><span style="color:var(--rose-deep)">${ICON.mail}</span><span class="fname">${LINKS.email}</span></a></li>
   <li><a href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer"><span style="color:var(--rose-deep)">${ICON.at}</span><span class="fname">${LINKS.handle}</span></a></li>
   <li><a href="#/entry"><span style="color:var(--rose-deep)">${ICON.mail}</span><span class="fname">Entry Form</span></a></li>
   <li><a href="#/privacy"><span style="color:var(--rose-deep)">${ICON.lock}</span><span class="fname">Privacy Policy</span></a></li>`;
