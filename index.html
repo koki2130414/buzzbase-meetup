@@ -3146,10 +3146,23 @@ function openIntro(){
   v.muted = true;
   paintIntroMute();
   try { v.currentTime = 0; } catch(e){}
-  const pr = v.play();
-  if (pr && pr.catch) pr.catch(()=>{ stage("gate"); $("#introStart").focus(); });
-  clearTimeout(introTimer);
-  introTimer = setTimeout(()=>{ if (v.readyState < 2) closeIntro(); }, 10000);
+  const toGate = () => { stage("gate"); $("#introStart").focus(); };
+  const tryPlay = () => Promise.resolve(v.play()).then(()=>true, ()=>false);
+  const armTimeout = () => {
+    clearTimeout(introTimer);
+    introTimer = setTimeout(()=>{ if (v.readyState < 2) closeIntro(); }, 12000);
+  };
+  tryPlay().then(ok => {
+    if (ok) { armTimeout(); return; }
+    if (document.hidden){
+      // 裏のタブでは再生が止められる。表に来てからもう一度試す。
+      document.addEventListener("visibilitychange", function again(){
+        if (document.hidden) return;
+        document.removeEventListener("visibilitychange", again);
+        tryPlay().then(ok2 => ok2 ? armTimeout() : toGate());
+      });
+    } else toGate();
+  });
   v.addEventListener("playing", ()=>clearTimeout(introTimer), {once:true});
   $("#introSkip").focus();
 }
@@ -3207,7 +3220,7 @@ render();
 Motion.init();
 FX.init();
 FX.afterRender();
-if (forced || !seen) openIntro();
+openIntro();
 </script>
 
 </body>
