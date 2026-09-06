@@ -844,12 +844,15 @@ footer.site .bot{display:flex;flex-direction:column;gap:14px;border-top:1px soli
 #intro .stage.movie{position:absolute;inset:0;max-width:none;width:100%;height:100%;display:block;gap:0}
 #intro .stage.movie[hidden]{display:none}
 #introVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#08080A}
-#intro .mv-ui{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;z-index:2}
-#intro .mv-btn{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.38);background:rgba(10,10,12,.5);color:#fff;cursor:pointer;
-  font-family:var(--jp);font-size:12.5px;letter-spacing:.06em;backdrop-filter:blur(6px);
-  transition:border-color .3s,background .3s}
-#intro .mv-btn:hover,#intro .mv-btn:focus-visible{border-color:#fff;background:rgba(10,10,12,.75)}
+#intro .mv-ui{position:absolute;left:0;right:0;bottom:30px;display:flex;justify-content:center;z-index:2}
+#intro .mv-btn{display:inline-flex;align-items:center;gap:11px;padding:15px 28px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.55);background:rgba(10,10,12,.55);color:#fff;cursor:pointer;
+  font-family:var(--jp);font-size:14px;letter-spacing:.08em;backdrop-filter:blur(8px);
+  box-shadow:0 10px 30px -12px rgba(0,0,0,.8);transition:border-color .3s,background .3s,transform .3s var(--ease)}
+#intro .mv-btn:hover,#intro .mv-btn:focus-visible{border-color:#fff;background:rgba(10,10,12,.82);transform:translateY(-2px)}
+#intro .mv-btn .ic{font-size:16px}
+#intro .mv-btn[aria-pressed="false"]{border-color:var(--red-b);background:rgba(230,0,32,.85)}
+#intro .mv-btn[aria-pressed="false"]:hover{background:var(--red-b)}
 #intro.playing .skip{border-color:rgba(255,255,255,.42);background:rgba(10,10,12,.5);color:#fff;
   backdrop-filter:blur(6px)}
 #intro.playing .skip:hover{border-color:#fff;color:#fff}
@@ -3137,7 +3140,18 @@ function stage(name){
 function openIntro(){
   document.body.style.overflow = "hidden";
   intro.classList.remove("hidden","out");
-  stage("gate"); $("#introStart").focus();
+  const v = $("#introVideo");
+  if (reduced() || !v){ stage("gate"); $("#introStart").focus(); return; }
+  stage("movie");
+  v.muted = true;
+  paintIntroMute();
+  try { v.currentTime = 0; } catch(e){}
+  const pr = v.play();
+  if (pr && pr.catch) pr.catch(()=>{ stage("gate"); $("#introStart").focus(); });
+  clearTimeout(introTimer);
+  introTimer = setTimeout(()=>{ if (v.readyState < 2) closeIntro(); }, 10000);
+  v.addEventListener("playing", ()=>clearTimeout(introTimer), {once:true});
+  $("#introSkip").focus();
 }
 function closeIntro(){
   store.set("bb:intro","1"); clearTimeout(introTimer);
