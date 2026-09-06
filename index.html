@@ -1693,7 +1693,7 @@ const EVENT = {
 const LINKS = {
   /* Google フォームの URL が決まったら、ここに貼るだけで
      ENTRY ページのボタンとフッターのリンクが有効になります。 */
-  entryForm:"",   /* ← Google フォームの URL を貼ると、サイト全体が「受付中」に切り替わります */
+  entryForm:"https://shokei.me/buzzbase/entry.html",
   instagram:"https://www.instagram.com/buzzbase.05.22/",
   handle:"@buzzbase.05.22"
 };
@@ -1942,7 +1942,7 @@ PAGES["/"] = () => `
       {t:"card",x:2,y:70,sp:.28,ph:3.6,sm:1}
     ])}
     ${vlabel("Selected Influencers & Executives","l","top:6%")}
-    ${vlabel("Tokyo — Venue Undisclosed","r","top:8%")}
+    ${vlabel("Tokyo — Shibuya","r","top:8%")}
     <div class="stage" data-heroscale>
       <picture>
         <source media="(min-width:900px)" srcset="${PHOTO_HERO}">
@@ -2449,9 +2449,12 @@ PAGES["/privacy"] = () => `
     <section><h2>1. 取得する情報</h2>
       <p>参加申込にあたり、以下の情報をお預かりします。</p>
       <ul>
-        <li>氏名</li><li>会社名または活動名</li><li>メールアドレス</li>
-        <li>Instagram のユーザー名、または SNS の URL</li>
-        <li>参加区分</li><li>応募理由</li>
+        <li>氏名</li>
+        <li>活動名（インフルエンサー枠）／ 会社名・役職（経営者・役員枠）</li>
+        <li>メールアドレス</li>
+        <li>電話番号</li>
+        <li>SNS アカウント名・URL、フォロワー数（インフルエンサー枠）／ 会社 URL（経営者・役員枠）</li>
+        <li>ご紹介者のお名前（任意）</li>
       </ul>
       <p class="n">上記以外の情報を、ご本人の同意なく取得することはありません。</p></section>
 
