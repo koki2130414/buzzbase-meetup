@@ -833,10 +833,6 @@ footer.site .bot{display:flex;flex-direction:column;gap:14px;border-top:1px soli
 #intro .brand{margin:0;font-family:var(--display);font-weight:500;text-transform:uppercase;
   font-size:clamp(3rem,15vw,9.5rem);line-height:.86;letter-spacing:.01em;
   background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-#intro .skip{position:absolute;right:16px;top:16px;z-index:2;padding:10px 18px;border-radius:999px;
-  border:1px solid var(--line-2);background:var(--mist);cursor:pointer;transition:border-color .3s,color .3s}
-#intro .skip:hover{border-color:var(--lilac);color:var(--rose-deep)}
-@media(min-width:900px){#intro .skip{right:28px;top:28px}}
 #intro .foot{position:absolute;left:0;right:0;bottom:20px;margin:0}
 /* 全画面で流すティザー映像 */
 #intro.playing{background:#08080A;padding:0}
@@ -853,9 +849,6 @@ footer.site .bot{display:flex;flex-direction:column;gap:14px;border-top:1px soli
 #intro .mv-btn .ic{font-size:16px}
 #intro .mv-btn[aria-pressed="false"]{border-color:var(--red-b);background:rgba(230,0,32,.85)}
 #intro .mv-btn[aria-pressed="false"]:hover{background:var(--red-b)}
-#intro.playing .skip{border-color:rgba(255,255,255,.42);background:rgba(10,10,12,.5);color:#fff;
-  backdrop-filter:blur(6px)}
-#intro.playing .skip:hover{border-color:#fff;color:#fff}
 .brief p{margin:0;font-family:var(--display);font-weight:400;text-transform:uppercase;
   font-size:clamp(1.5rem,6vw,3.6rem);line-height:1;letter-spacing:.04em;color:var(--ink);
   opacity:0;filter:blur(12px);transform:translateY(12px);animation:briefIn .9s var(--ease) forwards}
@@ -1659,8 +1652,6 @@ M4823 633 c9 -2 23 -2 30 0 6 3 -1 5 -18 5 -16 0 -22 -2 -12 -5z M4403 623 c9
   <span class="halftone" style="left:4%;bottom:8%;width:280px;height:280px" aria-hidden="true"></span>
   <span class="sweepline" id="introSweep" aria-hidden="true" hidden></span>
 
-  <button class="skip label" id="introSkip" hidden>Skip</button>
-
   <div class="stage" id="stageGate">
     <p class="label rose" style="margin:0">Sound On — Invitation Only</p>
     <p class="intro-meta" id="introMeta"></p>
@@ -2425,6 +2416,14 @@ ${pageHero("08","Entry","参加申込",[
           <a class="btn ghost" href="#/privacy">個人情報の取り扱い ${ARROW}</a>
         </div>
         <p class="lead-n">送信いただいた時点で、<a href="#/privacy">プライバシーポリシー</a>にご同意いただいたものとして取り扱います。運営より原則5営業日以内にご連絡いたします。</p>
+      </div>
+      <div class="entry-lead mt-md rv">
+        <p class="label">After Submitting — 送信が終わったら</p>
+        <h2 class="lead-h">VOL.03 のティザー映像をご覧いただけます</h2>
+        <p class="lead-p">フォームの送信を終えてこのページに戻られた方へ、当日の空気が伝わる映像をご用意しました。全画面で再生します。</p>
+        <div class="btn-row">
+          <button class="btn primary" type="button" data-play-thanks>送信しました — 映像を見る ${ARROW}</button>
+        </div>
       </div>` : `
       <div class="entry-lead">
         <p class="label">Application — 参加申込</p>
@@ -2494,6 +2493,24 @@ ${pageHero("07","Guests","参加者一覧",[
   <div class="btn-row mt-md rv">
     <a class="btn ghost" href="#/numbers">参加者の内訳を見る ${ARROW}</a>
     <a class="btn primary" href="#/entry">${ENTRY_OPEN?"申込フォームへ":"参加申込について"} ${ARROW}</a>
+  </div>
+</div>`;
+
+PAGES["/thanks"] = () => `
+${pageHero("09","Thank You","応募ありがとうございます",[
+  "参加申込のご送信、ありがとうございました。",
+  "内容は運営が一件ずつ拝見します。ご参加が確定した方には、追ってご連絡いたします。"])}
+<div class="wrap pad">
+  <div class="entry-lead rv">
+    <p class="label">Next Step — このあとの流れ</p>
+    <h2 class="lead-h">運営からのご連絡をお待ちください</h2>
+    <p class="lead-p">ご応募の内容を運営で確認し、原則5営業日以内にご連絡いたします。ご参加が確定した方にのみ、招待コードと会場情報をお送りします。${esc(EVENT.date)}のご案内も、あわせてそのメールに記載します。</p>
+    <p class="lead-n">${esc(EVENT.time)}／${esc(EVENT.venue)}。数日たってもご連絡が届かない場合は、迷惑メールフォルダをご確認のうえ、<a href="mailto:${LINKS.email}">${LINKS.email}</a> または <a href="${LINKS.instagram}" target="_blank" rel="noopener noreferrer">Instagram ${LINKS.handle}</a> の DM よりお知らせください。</p>
+  </div>
+
+  <div class="btn-row mt-md rv">
+    <button class="btn primary" type="button" data-play-thanks>ティザー映像をもう一度見る ${ARROW}</button>
+    <a class="btn ghost" href="#/">トップへ戻る ${ARROW}</a>
   </div>
 </div>`;
 
@@ -2666,12 +2683,14 @@ function render(){
   document.title = path === "/" ? "BUZZBASE MEETUP"
     : path === "/404" ? "404 | BUZZBASE MEETUP"
     : path === "/privacy" ? "Privacy | BUZZBASE MEETUP"
+    : path === "/thanks" ? "Thank You | BUZZBASE MEETUP"
     : (NAV.find(n=>n.href===path)?.label || "") + " | BUZZBASE MEETUP";
   setupReveals(); setupCounters(); setupTeaser();
   if (path === "/entry") setupForm();
   window.scrollTo(0,0); onScroll();
   if (typeof Motion !== "undefined") Motion.refresh();
   if (typeof FX !== "undefined") FX.afterRender();
+  playThanksIntro(path);
 }
 window.addEventListener("hashchange", () => FX.transition(render));
 
@@ -3133,17 +3152,17 @@ let introTimer = null;
 
 function stage(name){
   ["Gate","Movie","Brief","Enter"].forEach(s => $("#stage"+s).hidden = (s.toLowerCase() !== name));
-  $("#introSkip").hidden = (name === "gate");
   $("#introSweep").hidden = (name !== "brief");
   intro.classList.toggle("playing", name === "movie");
 }
-function openIntro(){
+function openIntro(opts){
+  const wantSound = !!(opts && opts.sound);   // ボタンを押した直後だけ音つきで流せる
   document.body.style.overflow = "hidden";
   intro.classList.remove("hidden","out");
   const v = $("#introVideo");
   if (reduced() || !v){ stage("gate"); $("#introStart").focus(); return; }
   stage("movie");
-  v.muted = true;
+  v.muted = !wantSound;
   paintIntroMute();
   try { v.currentTime = 0; } catch(e){}
   const toGate = () => { stage("gate"); $("#introStart").focus(); };
@@ -3152,7 +3171,12 @@ function openIntro(){
     clearTimeout(introTimer);
     introTimer = setTimeout(()=>{ if (v.readyState < 2) closeIntro(); }, 12000);
   };
-  tryPlay().then(ok => {
+  const tryMuted = () => {                    // 音つきが弾かれたら消音で流す
+    if (v.muted) return Promise.resolve(false);
+    v.muted = true; paintIntroMute();
+    return tryPlay();
+  };
+  tryPlay().then(ok => ok ? true : tryMuted()).then(ok => {
     if (ok) { armTimeout(); return; }
     if (document.hidden){
       // 裏のタブでは再生が止められる。表に来てからもう一度試す。
@@ -3164,7 +3188,7 @@ function openIntro(){
     } else toGate();
   });
   v.addEventListener("playing", ()=>clearTimeout(introTimer), {once:true});
-  $("#introSkip").focus();
+  if (introMute) introMute.focus();
 }
 function closeIntro(){
   store.set("bb:intro","1"); clearTimeout(introTimer);
@@ -3209,9 +3233,25 @@ $("#introStart").addEventListener("click", ()=>{
   introVideo.addEventListener("playing", ()=>clearTimeout(introTimer), {once:true});
 });
 $("#introEnter").addEventListener("click", closeIntro);
-$("#introSkip").addEventListener("click", closeIntro);
 $("#introSkipGate").addEventListener("click", closeIntro);
-$("#replayIntro").addEventListener("click", ()=>{ if(location.hash!=="#/") location.hash="#/"; openIntro(); });
+$("#replayIntro").addEventListener("click", ()=>{ if(location.hash!=="#/") location.hash="#/"; openIntro({sound:true}); });
+
+/* 申込フォームの送信を終えた方に、全画面でティザー映像を流す。
+   ボタン経由なら音つき、フォーム側から #/thanks へ直接戻ってきた場合は消音で始まる。 */
+let thanksPlayed = false;
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-play-thanks]");
+  if (!b) return;
+  e.preventDefault();
+  thanksPlayed = true;
+  if (location.hash !== "#/thanks") location.hash = "#/thanks";
+  openIntro({sound:true});
+});
+function playThanksIntro(path){
+  if (path !== "/thanks" || thanksPlayed) return;
+  thanksPlayed = true;
+  openIntro();
+}
 
 /* ==================================================================
    12. BOOT
@@ -3220,8 +3260,8 @@ render();
 Motion.init();
 FX.init();
 FX.afterRender();
-openIntro();
+if (forced) openIntro();                 // ?intro=1 で運営が確認するとき用
+playThanksIntro(currentPath());          // フォームから #/thanks に戻ってきたとき
 </script>
-
 </body>
 </html>
