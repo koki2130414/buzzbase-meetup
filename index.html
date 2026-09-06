@@ -602,7 +602,15 @@ td.n{font-size:12px;line-height:1.9;color:var(--ink-soft)}
 /* ---------- crew ---------- */
 .crew{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:26px}
 @media(min-width:640px){.crew{grid-template-columns:1fr 1fr}}
-@media(min-width:1000px){.crew{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1000px){.crew{grid-template-columns:repeat(3,1fr)}
+  /* 半谷 / 乾・小西 / 新見・岩田・達城 の三角配置。6分割の上に 2 列ずつ置いて中央を揃える。 */
+  .crew.pyramid{grid-template-columns:repeat(6,1fr)}
+  .crew.pyramid>li:nth-child(1){grid-column:3 / span 2}
+  .crew.pyramid>li:nth-child(2){grid-column:2 / span 2}
+  .crew.pyramid>li:nth-child(3){grid-column:4 / span 2}
+  .crew.pyramid>li:nth-child(4){grid-column:1 / span 2}
+  .crew.pyramid>li:nth-child(5){grid-column:3 / span 2}
+  .crew.pyramid>li:nth-child(6){grid-column:5 / span 2}}
 .crew article{height:100%;display:flex;flex-direction:column;gap:16px}
 .crew .ph{position:relative;aspect-ratio:4/5;border-radius:4px;overflow:hidden;background:var(--mist-2);
   display:flex;align-items:center;justify-content:center}
@@ -616,7 +624,11 @@ td.n{font-size:12px;line-height:1.9;color:var(--ink-soft)}
   .crew li.lead article{flex-direction:row;gap:26px;align-items:flex-start}
   .crew li.lead .ph{flex:0 0 46%;aspect-ratio:4/5}
   .crew li.lead h3{font-size:1.9rem}}
-@media(min-width:1000px){.crew li.lead .ph{flex:0 0 40%}}
+@media(min-width:1000px){.crew li.lead .ph{flex:0 0 40%}
+  /* 三角配置では先頭も他と同じ縦カードに戻す */
+  .crew.pyramid li.lead article{flex-direction:column;gap:16px;align-items:stretch}
+  .crew.pyramid li.lead .ph{flex:none}
+  .crew.pyramid li.lead h3{font-size:25px}}
 .crew .ph .code{position:absolute;left:12px;top:12px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.92);
   font-family:var(--display);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--rose-ink)}
 .crew h3{margin:0;font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:25px;line-height:1;letter-spacing:.03em}
@@ -1796,20 +1808,21 @@ const PROGRAM = [
    写真がない場合は photo を省略すると、イニシャルの枠が出ます。 */
 const PAST_GUESTS = [];
 const CREW = [
-  {code:"C-01",name:"HANKUN",nameJa:"半谷 一太",role:"Organizer",ja:"主催 / 総合プロデュース",ini:"HK",photo:PHOTO_HANKUN,ig:"h13i_14",bio:"カルチャーとビジネスの接続をテーマに、招待制イベントの企画・運営を手がける。BUZZBASE の立ち上げから全体設計を担当。"},
+  /* 表示順は 半谷 / 乾・小西 / 新見・岩田・達城 のピラミッド。並べ替えたら code も振り直してください。 */
   /* 素材が揃うまで非表示。ロゴか写真をもらえたら、この行のコメントを外してください。
   {code:"C-02",name:"STREETPV",role:"Co-Organizer",ja:"共催 / 映像ディレクション",ini:"SP",bio:"ストリートカルチャーを軸にした映像制作チーム。当日のオフィシャル撮影とアーカイブ映像の制作を担当。"}, */
-  {code:"C-02",name:"KOKI NIIMI",nameJa:"新見 康樹",role:"AI Creator",ja:"AIクリエイター",ini:"KN",photo:PHOTO_KOKI,ig:"_ko_213",
-   bio:"AIを使った制作を軸に、公式サイトの設計・運用と当日の記録まわりを担当。BUZZBASE の発信を裏側から支える。"},
-  {code:"C-03",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Event Director",ja:"イベントディレクション",ini:"SI",photo:PHOTO_INUI,ig:"inuidesu.soccer",
-   bio:"イベント全体の企画と当日の運営を担当。進行、導線、会場のオペレーションまでを取りまとめる。"},
-  {code:"C-04",name:"RYO TATSUSHIRO",nameJa:"達城 椋",role:"Party Chief",ja:"宴会部長",ini:"RT",photo:PHOTO_TATSUKI,ig:"ryo.tatsushiro",
-   bio:"当日のフロアを温める役まわり。はじめて来た方が輪に入りやすいよう、場の空気をつくる。"},
   /* Instagram が分かれば ig を足してください。 */
+  {code:"C-01",name:"HANKUN",nameJa:"半谷 一太",role:"Organizer",ja:"主催 / 総合プロデュース",ini:"HK",photo:PHOTO_HANKUN,ig:"h13i_14",bio:"カルチャーとビジネスの接続をテーマに、招待制イベントの企画・運営を手がける。BUZZBASE の立ち上げから全体設計を担当。"},
+  {code:"C-02",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Event Director",ja:"イベントディレクション",ini:"SI",photo:PHOTO_INUI,ig:"inuidesu.soccer",
+   bio:"イベント全体の企画と当日の運営を担当。進行、導線、会場のオペレーションまでを取りまとめる。"},
+  {code:"C-03",name:"SHORI KONISHI",nameJa:"小西 将理",role:"MC / Planning",ja:"SNS・イベント企画 / 司会",ini:"SK",photo:PHOTO_KONISHI,ig:"shori._.184cm",
+   bio:"司会、イベント企画、SNS運用、コンテンツ企画を担当。"},
+  {code:"C-04",name:"KOKI NIIMI",nameJa:"新見 康樹",role:"AI Creator",ja:"AIクリエイター",ini:"KN",photo:PHOTO_KOKI,ig:"_ko_213",
+   bio:"AIを使った制作を軸に、公式サイトの設計・運用と当日の記録まわりを担当。BUZZBASE の発信を裏側から支える。"},
   {code:"C-05",name:"SHOGO IWATA",nameJa:"岩田 紹吾",role:"Operations",ja:"管理運営",ini:"SI",photo:PHOTO_IWATA,ig:"s_hg._35",
    bio:"運営まわりの管理を担当。当日までの準備と、各所との調整を受け持つ。"},
-  {code:"C-06",name:"SHORI KONISHI",nameJa:"小西 将理",role:"MC / Planning",ja:"SNS・イベント企画 / 司会",ini:"SK",photo:PHOTO_KONISHI,ig:"shori._.184cm",
-   bio:"司会、イベント企画、SNS運用、コンテンツ企画を担当。"},
+  {code:"C-06",name:"RYO TATSUSHIRO",nameJa:"達城 椋",role:"Party Chief",ja:"宴会部長",ini:"RT",photo:PHOTO_TATSUKI,ig:"ryo.tatsushiro",
+   bio:"当日のフロアを温める役まわり。はじめて来た方が輪に入りやすいよう、場の空気をつくる。"},
 ];
 /* 公式クレジット。ロゴ画像が届いたら logo にデータ URI を入れてください。 */
 const PARTNERS = [
@@ -2293,7 +2306,7 @@ ${pageHero("04","Crew","主催・運営メンバー",[
   "企画と当日の運営、記録まわり、そして招待の審査まで。少人数で、参加者の体験を裏側から支えています。"])}
 <section class="pad" aria-label="運営メンバー一覧">
   <div class="wrap">
-    <ul class="crew">
+    <ul class="crew pyramid">
       ${CREW.map((m,i)=>`<li class="rv${i===0?" lead":""}"><article>
         <div class="ph">
           ${m.photo ? `<img src="${m.photo}" alt="${esc(m.name)}（${esc(m.ja)}）のポートレート" loading="lazy" decoding="async">`
