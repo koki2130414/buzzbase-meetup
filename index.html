@@ -838,6 +838,21 @@ footer.site .bot{display:flex;flex-direction:column;gap:14px;border-top:1px soli
 #intro .skip:hover{border-color:var(--lilac);color:var(--rose-deep)}
 @media(min-width:900px){#intro .skip{right:28px;top:28px}}
 #intro .foot{position:absolute;left:0;right:0;bottom:20px;margin:0}
+/* 全画面で流すティザー映像 */
+#intro.playing{background:#08080A;padding:0}
+#intro.playing .blob,#intro.playing .halftone,#intro.playing .foot{display:none}
+#intro .stage.movie{position:absolute;inset:0;max-width:none;width:100%;height:100%;display:block;gap:0}
+#intro .stage.movie[hidden]{display:none}
+#introVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#08080A}
+#intro .mv-ui{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;z-index:2}
+#intro .mv-btn{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.38);background:rgba(10,10,12,.5);color:#fff;cursor:pointer;
+  font-family:var(--jp);font-size:12.5px;letter-spacing:.06em;backdrop-filter:blur(6px);
+  transition:border-color .3s,background .3s}
+#intro .mv-btn:hover,#intro .mv-btn:focus-visible{border-color:#fff;background:rgba(10,10,12,.75)}
+#intro.playing .skip{border-color:rgba(255,255,255,.42);background:rgba(10,10,12,.5);color:#fff;
+  backdrop-filter:blur(6px)}
+#intro.playing .skip:hover{border-color:#fff;color:#fff}
 .brief p{margin:0;font-family:var(--display);font-weight:400;text-transform:uppercase;
   font-size:clamp(1.5rem,6vw,3.6rem);line-height:1;letter-spacing:.04em;color:var(--ink);
   opacity:0;filter:blur(12px);transform:translateY(12px);animation:briefIn .9s var(--ease) forwards}
@@ -1650,6 +1665,16 @@ M4823 633 c9 -2 23 -2 30 0 6 3 -1 5 -18 5 -16 0 -22 -2 -12 -5z M4403 623 c9
     <button class="btn primary" id="introStart">タップしてはじめる <span class="arw" aria-hidden="true">→</span></button>
     <p class="label" style="margin:0">This experience plays sound</p>
     <button class="label linkish" id="introSkipGate">Skip Intro</button>
+  </div>
+
+  <div class="stage movie" id="stageMovie" hidden>
+    <video id="introVideo" playsinline preload="auto"
+           aria-label="BUZZBASE MEETUP VOL.03 ティザー映像"></video>
+    <div class="mv-ui">
+      <button class="mv-btn" id="introMute" type="button" aria-pressed="true">
+        <span class="ic" aria-hidden="true">🔊</span><span class="t">音声をオフにする</span>
+      </button>
+    </div>
   </div>
 
   <div class="stage brief" id="stageBrief" hidden>
@@ -3097,9 +3122,10 @@ const seen = store.get("bb:intro") === "1";
 let introTimer = null;
 
 function stage(name){
-  ["Gate","Brief","Enter"].forEach(s => $("#stage"+s).hidden = (s.toLowerCase() !== name));
+  ["Gate","Movie","Brief","Enter"].forEach(s => $("#stage"+s).hidden = (s.toLowerCase() !== name));
   $("#introSkip").hidden = (name === "gate");
   $("#introSweep").hidden = (name !== "brief");
+  intro.classList.toggle("playing", name === "movie");
 }
 function openIntro(){
   document.body.style.overflow = "hidden";
@@ -3108,16 +3134,45 @@ function openIntro(){
 }
 function closeIntro(){
   store.set("bb:intro","1"); clearTimeout(introTimer);
+  const iv = $("#introVideo"); if (iv) { try { iv.pause(); } catch(e){} }
   intro.classList.add("out");
   setTimeout(()=>{ intro.classList.add("hidden"); intro.classList.remove("out"); }, reduced()?0:600);
   document.body.style.overflow = "";
 }
+/* ティザー映像を全画面で流す。ここはユーザー操作の直後なので、音つきで再生できる。 */
+const introVideo = $("#introVideo");
+if (introVideo){ introVideo.poster = VIDEO_POSTER; introVideo.src = VIDEO_SRC; }
+const introMute = $("#introMute");
+function paintIntroMute(){
+  if (!introMute) return;
+  introMute.setAttribute("aria-pressed", String(!introVideo.muted));
+  introMute.querySelector(".ic").textContent = introVideo.muted ? "🔇" : "🔊";
+  introMute.querySelector(".t").textContent = introVideo.muted ? "音声をオンにする" : "音声をオフにする";
+}
+if (introMute) introMute.addEventListener("click", ()=>{
+  introVideo.muted = !introVideo.muted;
+  if (!introVideo.muted && introVideo.paused) introVideo.play().catch(()=>{});
+  paintIntroMute();
+});
+if (introVideo){
+  introVideo.addEventListener("volumechange", paintIntroMute);
+  introVideo.addEventListener("ended", closeIntro);
+  // 再生できない環境では素通しする（ただし映像ステージに入っているときだけ）
+  introVideo.addEventListener("error", ()=>{ if (!$("#stageMovie").hidden) closeIntro(); });
+}
 $("#introStart").addEventListener("click", ()=>{
-  Sound.set(true); Sound.blip();
-  if (reduced()) { stage("enter"); return; }
-  stage("brief");
-  $$("#stageBrief p, #stageBrief .bar").forEach(el=>{ el.style.animation="none"; void el.offsetWidth; el.style.animation=""; });
-  introTimer = setTimeout(()=>stage("enter"), 3600);
+  if (reduced()) { Sound.set(true); Sound.blip(); stage("enter"); return; }
+  stage("movie");
+  introVideo.muted = false;
+  paintIntroMute();
+  introVideo.currentTime = 0;
+  introVideo.play().catch(()=>{             // 音つきが弾かれたら消音で流す
+    introVideo.muted = true; paintIntroMute();
+    introVideo.play().catch(closeIntro);
+  });
+  // 映像が始まらないときに固まらないよう、10秒で見切りをつける
+  introTimer = setTimeout(()=>{ if (introVideo.readyState < 2) closeIntro(); }, 10000);
+  introVideo.addEventListener("playing", ()=>clearTimeout(introTimer), {once:true});
 });
 $("#introEnter").addEventListener("click", closeIntro);
 $("#introSkip").addEventListener("click", closeIntro);
