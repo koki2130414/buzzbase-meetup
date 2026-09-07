@@ -210,6 +210,10 @@ a:hover>.circ,.circ:hover{background:var(--grad);color:var(--on-grad);border-col
 
 /* ---------- 3D で漂うオブジェクト ---------- */
 .floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none;perspective:1100px;z-index:1}
+/* 装飾のカードは本文より後ろに。スマホでは場所がないので出さない。 */
+section:not(.hero) .floaters{z-index:0}
+section:not(.hero) .wrap{position:relative;z-index:1}
+@media(max-width:899px){section:not(.hero) .floaters{display:none}}
 .fl{position:absolute;left:var(--x);top:var(--y);transform-style:preserve-3d;will-change:transform}
 .fl i{display:block;border-radius:7px;background:linear-gradient(145deg,#FFFFFF 0%,#F2F1F8 45%,#E7ECF4 100%);
   border:1px solid rgba(51,51,62,.09);box-shadow:0 12px 20px -12px rgba(84,74,150,.45);
@@ -320,8 +324,10 @@ a:hover>.circ,.circ:hover{background:var(--grad);color:var(--on-grad);border-col
 .hero .charslot{position:absolute;right:2%;bottom:0;height:88%;width:auto;pointer-events:none;z-index:3}
 .hero .charslot img{display:block;height:100%;width:auto;filter:drop-shadow(0 26px 50px rgba(51,51,62,.3))}
 /* スマホでは本文にかからないよう、右下に小さめで置く */
-@media(max-width:899px){.hero .charslot{right:-3%;bottom:0;height:40%}}
-@media(max-width:520px){.hero .charslot{right:-4%;height:36%}}
+@media(max-width:899px){.hero .charslot{right:-5%;bottom:0;height:34%}
+  /* キャラクターとボタンが重ならないよう、ボタンは縦に積む */
+  .hero .cta{max-width:60%}}
+@media(max-width:520px){.hero .charslot{right:-7%;height:30%}}
 
 /* ---------- news band ---------- */
 .newsband{position:relative;max-width:1320px;margin:0 auto;padding:0 20px}
