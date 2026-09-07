@@ -1848,22 +1848,25 @@ const PROGRAM = [
    写真がない場合は photo を省略すると、イニシャルの枠が出ます。 */
 const PAST_GUESTS = [];
 const CREW = [
-  /* 表示順は 半谷 / 乾・小西 / 新見・岩田・達城 のピラミッド。並べ替えたら code も振り直してください。 */
+  /* 表示順は 半谷 / 乾・小西 / 新見・岩田・達城 のピラミッド。並べ替えたら code も振り直してください。
+     show:false を付けたメンバーはサイトに出ません。再表示するときは、その行の show:false, を消すだけです。 */
   /* 素材が揃うまで非表示。ロゴか写真をもらえたら、この行のコメントを外してください。
   {code:"C-02",name:"STREETPV",role:"Co-Organizer",ja:"共催 / 映像ディレクション",ini:"SP",bio:"ストリートカルチャーを軸にした映像制作チーム。当日のオフィシャル撮影とアーカイブ映像の制作を担当。"}, */
   /* Instagram が分かれば ig を足してください。 */
   {code:"C-01",name:"HANKUN",nameJa:"半谷 一太",role:"Organizer",ja:"主催 / 総合プロデュース",ini:"HK",photo:PHOTO_HANKUN,ig:"h13i_14",bio:"カルチャーとビジネスの接続をテーマに、招待制イベントの企画・運営を手がける。BUZZBASE の立ち上げから全体設計を担当。"},
-  {code:"C-02",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Event Director",ja:"イベントディレクション",ini:"SI",photo:PHOTO_INUI,ig:"inuidesu.soccer",
+  {show:false,code:"C-02",name:"SOTA INUI",nameJa:"乾 颯汰",role:"Event Director",ja:"イベントディレクション",ini:"SI",photo:PHOTO_INUI,ig:"inuidesu.soccer",
    bio:"イベント全体の企画と当日の運営を担当。進行、導線、会場のオペレーションまでを取りまとめる。"},
-  {code:"C-03",name:"SHORI KONISHI",nameJa:"小西 将理",role:"MC / Planning",ja:"SNS・イベント企画 / 司会",ini:"SK",photo:PHOTO_KONISHI,ig:"shori._.184cm",
+  {show:false,code:"C-03",name:"SHORI KONISHI",nameJa:"小西 将理",role:"MC / Planning",ja:"SNS・イベント企画 / 司会",ini:"SK",photo:PHOTO_KONISHI,ig:"shori._.184cm",
    bio:"司会、イベント企画、SNS運用、コンテンツ企画を担当。"},
-  {code:"C-04",name:"KOKI NIIMI",nameJa:"新見 康樹",role:"AI Creator",ja:"AIクリエイター",ini:"KN",photo:PHOTO_KOKI,ig:"_ko_213",
+  {show:false,code:"C-04",name:"KOKI NIIMI",nameJa:"新見 康樹",role:"AI Creator",ja:"AIクリエイター",ini:"KN",photo:PHOTO_KOKI,ig:"_ko_213",
    bio:"AIを使った制作を軸に、公式サイトの設計・運用と当日の記録まわりを担当。BUZZBASE の発信を裏側から支える。"},
-  {code:"C-05",name:"SHOGO IWATA",nameJa:"岩田 紹吾",role:"Operations",ja:"管理運営",ini:"SI",photo:PHOTO_IWATA,ig:"s_hg._35",
+  {show:false,code:"C-05",name:"SHOGO IWATA",nameJa:"岩田 紹吾",role:"Operations",ja:"管理運営",ini:"SI",photo:PHOTO_IWATA,ig:"s_hg._35",
    bio:"運営まわりの管理を担当。当日までの準備と、各所との調整を受け持つ。"},
-  {code:"C-06",name:"RYO TATSUSHIRO",nameJa:"達城 椋",role:"Party Chief",ja:"宴会部長",ini:"RT",photo:PHOTO_TATSUKI,ig:"ryo.tatsushiro",
+  {show:false,code:"C-06",name:"RYO TATSUSHIRO",nameJa:"達城 椋",role:"Party Chief",ja:"宴会部長",ini:"RT",photo:PHOTO_TATSUKI,ig:"ryo.tatsushiro",
    bio:"当日のフロアを温める役まわり。はじめて来た方が輪に入りやすいよう、場の空気をつくる。"},
 ];
+/* 実際にサイトへ出すメンバー。show:false を外せばすぐ戻ります。 */
+const CREW_ON = CREW.filter(m => m.show !== false);
 /* 公式クレジット。ロゴ画像が届いたら logo にデータ URI を入れてください。 */
 const PARTNERS = [
   {kind:"Partner", name:"STREET PV", ja:"映像制作パートナー", logo:null, url:"https://www.instagram.com/streetpv.03/"},
@@ -2359,8 +2362,8 @@ ${pageHero("04","Crew","主催・運営メンバー",[
   "企画と当日の運営、記録まわり、そして招待の審査まで。少人数で、参加者の体験を裏側から支えています。"])}
 <section class="pad" aria-label="運営メンバー一覧">
   <div class="wrap">
-    <ul class="crew pyramid">
-      ${CREW.map((m,i)=>`<li class="rv${i===0?" lead":""}"><article>
+    <ul class="crew${CREW_ON.length > 1 ? " pyramid" : ""}">
+      ${CREW_ON.map((m,i)=>`<li class="rv${i===0?" lead":""}"><article>
         <div class="ph">
           ${m.photo ? `<img src="${m.photo}" alt="${esc(m.name)}（${esc(m.ja)}）のポートレート" loading="lazy" decoding="async">`
                     : `<span class="ini" aria-hidden="true">${m.ini}</span><span class="wash" aria-hidden="true"></span>`}
