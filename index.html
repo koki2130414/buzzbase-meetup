@@ -1718,7 +1718,7 @@ M4823 633 c9 -2 23 -2 30 0 6 3 -1 5 -18 5 -16 0 -22 -2 -12 -5z M4403 623 c9
   </div>
 
   <div class="stage movie" id="stageMovie" hidden>
-    <video id="introVideo" playsinline preload="auto"
+    <video id="introVideo" playsinline preload="none"
            aria-label="BUZZBASE MEETUP VOL.03 ティザー映像"></video>
     <div class="mv-ui">
       <button class="mv-btn" id="introMute" type="button" aria-pressed="true">
@@ -2084,9 +2084,8 @@ PAGES["/"] = () => `
 <section class="pad-sm" aria-label="ティザー映像">
   <div class="movie rv">
     <div class="frame">
-      <video id="teaser" controls playsinline autoplay muted loop preload="auto" poster="${VIDEO_POSTER}"
+      <video id="teaser" controls playsinline muted loop preload="none" poster="${VIDEO_POSTER}" data-src="${VIDEO_SRC}"
              aria-label="BUZZBASE MEETUP VOL.03 ティザー映像">
-        <source src="${VIDEO_SRC}" type="video/mp4">
         お使いのブラウザは動画の再生に対応していません。
       </video>
     </div>
@@ -2831,15 +2830,17 @@ function setupTeaser(){
   let stopped = false;                       // 利用者が自分で止めたら以後は自動再生しない
   v.addEventListener("pause", () => { if (!document.hidden && v.currentTime > 0) stopped = true; });
   v.addEventListener("play", () => { stopped = false; });
-  const go = () => { if (!stopped) v.play().catch(()=>{}); };
-  go();
+  // 画面に入ってはじめて読み込む。読み込むまではポスター画像だけを見せる。
+  const load = () => { if (!v.src && v.dataset.src) v.src = v.dataset.src; };
+  const go = () => { if (stopped) return; load(); v.play().catch(()=>{}); };
   ["loadeddata","canplay"].forEach(ev => v.addEventListener(ev, go, {once:true}));
-  // 画面から外れたら止め、戻ったら再開する
   if ("IntersectionObserver" in window){
     new IntersectionObserver(en => en.forEach(x => {
       if (x.isIntersecting) go(); else if (!v.paused) v.pause();
     }), {threshold:.25}).observe(v);
-  }
+  } else { go(); }
+  // 再生ボタンを押されたときも読み込めるように
+  v.addEventListener("play", load);
 }
 function setupCounters(){
   const els = $$("[data-count]"); if (!els.length) return;
@@ -3240,6 +3241,7 @@ function openIntro(opts){
   intro.classList.remove("hidden","out");
   const v = $("#introVideo");
   if (reduced() || !v){ stage("gate"); $("#introStart").focus(); return; }
+  ensureIntroSrc();
   stage("movie");
   v.muted = !wantSound;
   paintIntroMute();
@@ -3278,7 +3280,11 @@ function closeIntro(){
 }
 /* ティザー映像を全画面で流す。ここはユーザー操作の直後なので、音つきで再生できる。 */
 const introVideo = $("#introVideo");
-if (introVideo){ introVideo.poster = VIDEO_POSTER; introVideo.src = VIDEO_SRC; }
+if (introVideo) introVideo.poster = VIDEO_POSTER;
+/* 6.6MB の映像は、実際に再生するときになってから読み込む */
+function ensureIntroSrc(){
+  if (introVideo && !introVideo.src) introVideo.src = VIDEO_SRC;
+}
 const introMute = $("#introMute");
 function paintIntroMute(){
   if (!introMute) return;
@@ -3300,6 +3306,7 @@ if (introVideo){
 $("#introStart").addEventListener("click", ()=>{
   if (reduced()) { Sound.set(true); Sound.blip(); stage("enter"); return; }
   stage("movie");
+  ensureIntroSrc();
   introVideo.muted = false;
   paintIntroMute();
   introVideo.currentTime = 0;
