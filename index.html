@@ -2831,7 +2831,11 @@ function setupTeaser(){
   v.addEventListener("pause", () => { if (!document.hidden && v.currentTime > 0) stopped = true; });
   v.addEventListener("play", () => { stopped = false; });
   // 画面に入ってはじめて読み込む。読み込むまではポスター画像だけを見せる。
+  // preload="none" なので、src を入れただけでは通信は始まらない。
   const load = () => { if (!v.src && v.dataset.src) v.src = v.dataset.src; };
+  // 最初の表示が終わったら src だけ入れておく（再生ボタンを押せば普通に再生できる状態にする）
+  if ("requestIdleCallback" in window) requestIdleCallback(load, {timeout:2500});
+  else setTimeout(load, 1200);
   const go = () => { if (stopped) return; load(); v.play().catch(()=>{}); };
   ["loadeddata","canplay"].forEach(ev => v.addEventListener(ev, go, {once:true}));
   if ("IntersectionObserver" in window){
